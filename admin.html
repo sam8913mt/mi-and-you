@@ -82,6 +82,32 @@ details.grp>.grid{padding:0 14px 14px}
  .savebar button,.actions>.button,header .actions>*{flex:1 1 auto}
  .savebar button{width:100%}
 }
+
+/* ---- Meeting date card + panel polish ---- */
+body{background:radial-gradient(1200px 500px at 85% -10%,rgba(217,140,163,.22),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(214,183,122,.18),transparent 55%),var(--bg);background-attachment:fixed}
+header{background:linear-gradient(135deg,#fff,#fbeff4);border-top:0;position:relative;overflow:hidden}
+header:before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--pri2),var(--acc),#d6b77a)}
+.panel{transition:box-shadow .25s,transform .25s}
+.sec-head h2{display:flex;align-items:center;gap:8px}
+button,.button{transition:transform .15s,box-shadow .2s,filter .2s;box-shadow:0 6px 16px rgba(120,59,85,.18)}
+button:hover,.button:hover{transform:translateY(-1px)}button:active{transform:translateY(0)}
+button.secondary,.button.secondary{box-shadow:none}
+select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #e0cfda;border-radius:12px;font:inherit;color:var(--ink);background:#fff;appearance:none;-webkit-appearance:none;cursor:pointer;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23783b55' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 14px center;padding-left:36px}
+.mt-card{background:linear-gradient(160deg,#fff,#fbf1f5);border:1px solid var(--bd);border-radius:20px;padding:clamp(14px,3vw,22px);box-shadow:0 10px 30px rgba(120,59,85,.10);max-width:560px}
+.mt-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.mt-head b{display:block;color:var(--pri2);font-size:1.1rem}.mt-head small{color:var(--mut)}
+.mt-ico{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;font-size:1.5rem;background:linear-gradient(135deg,#f6d6e0,#f3e3c3)}
+.mt-row3{display:grid;grid-template-columns:.8fr 1.4fr 1.1fr;gap:10px;margin-top:6px}
+.mt-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.mt-f label{margin:10px 0 6px}
+.mt-preview{margin-top:18px;text-align:center;padding:18px 14px;border-radius:18px;color:#fff;background:linear-gradient(135deg,#783b55,#51243b);border:1px solid rgba(214,183,122,.6);box-shadow:0 12px 26px rgba(81,36,59,.28)}
+.mt-big{font-size:clamp(1.3rem,5vw,1.8rem);font-weight:700;line-height:1.5}
+.mt-sub{margin-top:2px;color:#f6d6e0}
+.mt-greg{margin-top:8px;font-size:.78rem;color:#e7cdd8;direction:ltr;opacity:.85}
+#p2-tabs button.secondary:not(.on){background:#f4e9ef!important}
+.p2-admin-item{transition:box-shadow .2s}.p2-admin-item:hover{box-shadow:0 8px 20px rgba(120,59,85,.10)}
+@media(max-width:700px){.mt-row3{grid-template-columns:1fr 1.3fr 1fr}.mt-card{max-width:none}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>

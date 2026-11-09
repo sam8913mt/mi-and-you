@@ -154,22 +154,36 @@ section{box-shadow:0 22px 60px rgba(12,5,18,.22);backdrop-filter:blur(14px)}
 footer{color:#E4D5DD}
 #lightbox{background:rgba(20,10,25,.96)}
 @media(max-width:650px){.gate-card{width:100%}.hero{min-height:92svh}}
-/* all light-section text black */
-section,section p,section div,section span,section b,section small,section label,.letter,.signature,.section-title,.section-sub,.eyebrow-x,.counter *,.secret,.secret *,.ending *,.p2-card,.p2-card *,.p2-muted,.photo-head,.note,.breakdown{color:#000!important;-webkit-text-fill-color:#000!important}
-section .big-heart{color:#D98CA3!important;-webkit-text-fill-color:#D98CA3!important}
-section button,section .p2-btn{color:#fff!important;-webkit-text-fill-color:#fff!important}
-section input,section textarea,section select{color:#000!important;-webkit-text-fill-color:#000!important}
-/* everything black on light background */
-html,body{background:#FFF4EC!important;color:#000!important}
-#gate{background:#FFF4EC!important}
-.gate-card{background:#fff!important}
-body *:not(button):not(.gate-btn):not(.big-heart):not(.heart):not(#lightbox *):not(.music *){color:#000!important;-webkit-text-fill-color:#000!important}
-.hero h1,.hero h1 span,.hero .eyebrow,.hero .lead,.gate-title,.gate-sub,footer,.gate-quiet{color:#000!important;-webkit-text-fill-color:#000!important;text-shadow:none!important}
-.music{background:#fff!important;color:#000!important;border-color:#000!important}
-.gate-btn{color:#fff!important;-webkit-text-fill-color:#fff!important}
-section{background:#fff!important}
-.secret{background:#fff!important;border:1px solid #000!important}
-
+/* ===== Romantic light theme ===== */
+html{background:#FFF4EC!important}
+body{color:#3F2A4D!important;background:radial-gradient(circle at 8% 0%,#FFE1EA 0,transparent 42%),radial-gradient(circle at 95% 18%,#FBEBCB 0,transparent 36%),radial-gradient(circle at 50% 100%,#F7D9E6 0,transparent 45%),linear-gradient(180deg,#FFF8F3,#FDEEF2)!important}
+#gate{background:radial-gradient(circle at 20% 15%,#FFE1EA 0,transparent 45%),radial-gradient(circle at 85% 85%,#FBEBCB 0,transparent 45%),#FFF6F1!important}
+.gate-card{background:rgba(255,255,255,.82)!important;border:1px solid rgba(214,183,122,.55)!important;box-shadow:0 24px 70px rgba(120,59,85,.18)!important}
+.gate-title,h1,.section-title{background:linear-gradient(135deg,#783B55 0%,#C2607F 55%,#B8893F 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;color:transparent!important;text-shadow:none!important}
+.hero h1 span{-webkit-text-fill-color:#51243B!important;color:#51243B!important}
+.section-title{position:relative;padding-bottom:18px}
+.section-title::after{content:"\2726  \2665  \2726";display:block;margin-top:6px;font-size:.8rem;letter-spacing:8px;-webkit-text-fill-color:#D6B77A;color:#D6B77A}
+.gate-sub,.hero .lead,.section-sub{color:#6B4B63!important;-webkit-text-fill-color:#6B4B63!important}
+.eyebrow,.hero .eyebrow{color:#9A6B2F!important;-webkit-text-fill-color:#9A6B2F!important;letter-spacing:1px}
+footer,.note,.counter small,.p2-muted,.photos-empty{color:#7A5A70!important;-webkit-text-fill-color:#7A5A70!important}
+.signature,.photo-head,.secret b,.p2-card h3,.p2-card b{color:#783B55!important;-webkit-text-fill-color:#783B55!important}
+.days{background:linear-gradient(135deg,#783B55,#D98CA3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent!important;color:transparent!important}
+.breakdown{color:#51243B!important;-webkit-text-fill-color:#51243B!important;font-weight:700}
+section,section p,section div,section span,section li,section label,.letter,.ending p{color:#3F2A4D;-webkit-text-fill-color:#3F2A4D}
+section{background:rgba(255,255,255,.9)!important;border:1px solid rgba(214,183,122,.45)!important;border-radius:30px!important;box-shadow:0 18px 50px rgba(120,59,85,.12)!important;position:relative}
+section::before{content:"";position:absolute;top:0;left:12%;right:12%;height:3px;border-radius:0 0 6px 6px;background:linear-gradient(90deg,transparent,#D6B77A,#D98CA3,#D6B77A,transparent)}
+.letter{background:linear-gradient(180deg,#FFFDFB,#FFF6F1);border:1px solid #F3DCE4;border-right:5px solid #D98CA3;border-radius:20px;padding:clamp(18px,4vw,30px);box-shadow:inset 0 0 40px rgba(240,197,210,.18)}
+.signature{font-size:1.15rem}
+.photo{border-radius:24px!important;border:1px solid #F3DCE4!important;box-shadow:0 14px 34px rgba(120,59,85,.14)!important;transition:transform .3s,box-shadow .3s}
+.photo:hover{transform:translateY(-4px);box-shadow:0 22px 44px rgba(120,59,85,.22)!important}
+.photo img{transition:transform .5s}.photo:hover img{transform:scale(1.04)}
+.secret{background:linear-gradient(135deg,#fff,#FFE9F0)!important;border:1px solid #F0C5D2!important;border-radius:22px!important;box-shadow:0 10px 26px rgba(217,140,163,.2)}
+.secret p{color:#3F2A4D!important;-webkit-text-fill-color:#3F2A4D!important}
+.music{background:rgba(255,255,255,.92)!important;color:#783B55!important;border:1px solid #D98CA3!important;box-shadow:0 8px 22px rgba(120,59,85,.18)}
+.gate-btn,.scroll,section button,section .p2-btn{background:linear-gradient(135deg,#C2607F,#783B55)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:1px solid rgba(214,183,122,.6)!important;box-shadow:0 12px 26px rgba(120,59,85,.28)!important}
+.gate-quiet{color:#7A5A70!important;-webkit-text-fill-color:#7A5A70!important}
+section .big-heart,.big-heart{color:#D98CA3!important;-webkit-text-fill-color:#D98CA3!important}
+section input,section textarea,section select{color:#3F2A4D!important;-webkit-text-fill-color:#3F2A4D!important;background:#fff!important;border:1px solid #F0C5D2!important;border-radius:12px}
 </style>
 <noscript><style>#gate{display:none}.js .reveal{opacity:1;transform:none}body.locked{overflow:auto;height:auto}
 /* Premium ME & YOU refinements */

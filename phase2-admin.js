@@ -17,8 +17,65 @@
  async function remove(table,id){if(!confirm('این مورد برای همیشه حذف شود؟'))return;const {error}=await client.from(table).delete().eq('id',id);if(error)throw error;say('حذف شد.');render();}
  async function save(table,id,payload){const q=id?client.from(table).update(payload).eq('id',id):client.from(table).insert(payload);const {error}=await q;if(error)throw error;say('ذخیره شد.');render();}
  function itemCard(title,body,buttons){const d=document.createElement('div');d.className='p2-admin-item';const h=document.createElement('b');h.textContent=title;const p=document.createElement('p');p.textContent=body;d.append(h,p,...buttons);return d;}
+ async function renderMeeting(){
+  const JD=window.JDate;
+  if(!JD){say('فایل jdate.js بارگذاری نشده است.');return;}
+  const TZ=3.5*3600000,fa=JD.faNum,p2=n=>String(n).padStart(2,'0');
+  const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;};
+  const fromIso=(iso)=>{const ts=Date.parse(iso);if(Number.isNaN(ts))return null;const t=new Date(ts+TZ);const j=JD.toJalali(t.getUTCFullYear(),t.getUTCMonth()+1,t.getUTCDate());return{jy:j.jy,jm:j.jm,jd:j.jd,hh:t.getUTCHours(),mi:t.getUTCMinutes()};};
+  const {data,error}=await client.from('site_content').select('value').eq('key','meeting_date').maybeSingle();
+  if(error)throw error;
+  const nowT=new Date(Date.now()+TZ),nj=JD.toJalali(nowT.getUTCFullYear(),nowT.getUTCMonth()+1,nowT.getUTCDate());
+  const cur=data?.value?fromIso(data.value):null;
+  const init=cur||{jy:nj.jy,jm:nj.jm,jd:nj.jd,hh:18,mi:0};
+
+  const card=el('div','mt-card');
+  card.append(el('div','mt-head',''),el('p','hint','تاریخ و ساعت دیدار را به وقت تهران و با تقویم شمسی انتخاب کن؛ در پایگاه داده به‌صورت استاندارد ذخیره می‌شود.'));
+  card.firstChild.append(el('span','mt-ico','💞'),el('div','',''));
+  card.firstChild.lastChild.append(el('b','','دیدار بعدی'),el('small','','به وقت تهران (UTC+۰۳:۳۰)'));
+
+  const mkSel=(id,label,opts,val)=>{const w=el('div','mt-f');const l=el('label','',label);l.htmlFor=id;const s=document.createElement('select');s.id=id;opts.forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;s.append(o);});s.value=String(val);w.append(l,s);return[w,s];};
+  const years=[];for(let y=Math.min(nj.jy,init.jy)-1;y<=Math.max(nj.jy,init.jy)+5;y++)years.push([y,fa(y)]);
+  const months=JD.monthNames.map((n,i)=>[i+1,n]);
+  const [wy,sy]=mkSel('mt-y','سال',years,init.jy);
+  const [wm,sm]=mkSel('mt-m','ماه',months,init.jm);
+  const [wd,sd]=mkSel('mt-d','روز',[[1,'۱']],init.jd);
+  const hours=[...Array(24).keys()].map(h=>[h,fa(p2(h))]);
+  const mins=[...Array(12).keys()].map(i=>[i*5,fa(p2(i*5))]);
+  if(init.mi%5)mins.push([init.mi,fa(p2(init.mi))]),mins.sort((a,b)=>a[0]-b[0]);
+  const [wh,sh]=mkSel('mt-h','ساعت',hours,init.hh);
+  const [wi,si]=mkSel('mt-i','دقیقه',mins,init.mi);
+
+  const dateRow=el('div','mt-row3');dateRow.append(wd,wm,wy);
+  const timeRow=el('div','mt-row2');timeRow.append(wh,wi);
+  const fillDays=(keep)=>{const jy=+sy.value,jm=+sm.value,len=JD.jalaliMonthLength(jy,jm);const old=keep??+sd.value;sd.innerHTML='';for(let d=1;d<=len;d++){const o=document.createElement('option');o.value=d;o.textContent=fa(d);sd.append(o);}sd.value=String(Math.min(old||1,len));};
+  fillDays(init.jd);
+
+  const preview=el('div','mt-preview');
+  const big=el('div','mt-big'),sub=el('div','mt-sub'),greg=el('div','mt-greg');
+  preview.append(big,sub,greg);
+  const getIso=()=>{const jy=+sy.value,jm=+sm.value,jd=+sd.value;if(!JD.isValidJalali(jy,jm,jd))return null;return`${JD.jalaliToIso(jy,jm,jd)}T${p2(sh.value)}:${p2(si.value)}:00+03:30`;};
+  const upd=()=>{
+   const iso=getIso();if(!iso){big.textContent='تاریخ معتبر نیست';return null;}
+   const jy=+sy.value,jm=+sm.value,jd=+sd.value;
+   big.textContent=`${fa(jd)} ${JD.monthNames[jm-1]} ${fa(jy)}`;
+   const ts=Date.parse(iso),ms=ts-Date.now();
+   if(ms<=0){sub.textContent=`ساعت ${fa(p2(sh.value))}:${fa(p2(si.value))} · این زمان گذشته است`;}
+   else{const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5);sub.textContent=`ساعت ${fa(p2(sh.value))}:${fa(p2(si.value))} · ${d?fa(d)+' روز و ':''}${fa(h)} ساعت دیگر`;}
+   greg.textContent=`معادل میلادی: ${iso.slice(0,16).replace('T',' ')} (تهران)`;
+   return iso;};
+  [sy,sm].forEach(s=>s.addEventListener('change',()=>{fillDays();upd();}));
+  [sd,sh,si].forEach(s=>s.addEventListener('change',upd));
+  upd();
+
+  const saveBtn=el('button','','💾 ذخیره تاریخ دیدار');saveBtn.type='button';
+  saveBtn.onclick=async()=>{const iso=upd();if(!iso){say('تاریخ معتبر وارد کن.');return;}saveBtn.disabled=true;try{const {error:e}=await client.from('site_content').upsert({key:'meeting_date',value:iso},{onConflict:'key'});if(e)throw e;say('تاریخ دیدار ذخیره شد 💞');}catch(e){say('خطا: '+e.message);}finally{saveBtn.disabled=false;}};
+  const bar=el('div','savebar');bar.append(saveBtn);
+  card.append(dateRow,timeRow,preview,bar);
+  work.append(card);
+ }
  async function render(){work.innerHTML='';[...tabWrap.children].forEach((b,i)=>b.classList.toggle('on',tabs[i][0]===active));say('');const tab=tabs.find(x=>x[0]===active);const h=document.createElement('h3');h.textContent=tab[1];work.append(h);try{
- if(active==='meeting'){const current=await client.from('site_content').select('value').eq('key','meeting_date').maybeSingle();const inp=field('تاریخ و ساعت دیدار (ISO، نمونه: 2027-03-20T18:00:00+03:30)',current.data?.value||'','text');const saveBtn=document.createElement('button');saveBtn.textContent='ذخیره تاریخ دیدار';saveBtn.onclick=async()=>{if(!inp.value.trim()||Number.isNaN(new Date(inp.value).getTime())){say('تاریخ معتبر وارد کن.');return;}saveBtn.disabled=true;try{const {error}=await client.from('site_content').upsert({key:'meeting_date',value:inp.value.trim()},{onConflict:'key'});if(error)throw error;say('تاریخ دیدار ذخیره شد.');}catch(e){say('خطا: '+e.message);}finally{saveBtn.disabled=false;}};work.append(inp,saveBtn);return;}
+ if(active==='meeting'){await renderMeeting();return;}
  if(active==='videos'){const title=field('عنوان ویدئو'),desc=field('توضیحات','', 'textarea'),file=field('انتخاب ویدئو','','file'),thumb=field('تصویر بندانگشتی (اختیاری)','','file'),btn=document.createElement('button');file.accept='video/mp4,video/webm,video/ogg';thumb.accept='image/jpeg,image/png,image/webp';btn.textContent='بارگذاری ویدئو';btn.onclick=async()=>{const f=file.files[0];if(!f||!title.value.trim()){say('عنوان ویدئو و فایل را انتخاب کن.');return;}if(!/^video\/(mp4|webm|ogg)$/.test(f.type)){say('فرمت مجاز: MP4، WebM یا OGG.');return;}if(f.size>100*1024*1024){say('حداکثر حجم ویدئو ۱۰۰ مگابایت است.');return;}btn.disabled=true;try{say('در حال بارگذاری ویدئو…');const path=crypto.randomUUID()+'.'+(f.name.split('.').pop()||'mp4').toLowerCase();await uploadWithProgress('videos',path,f,p=>say(`در حال بارگذاری ویدئو… ${p}٪`));let thumbPath=null;if(thumb.files[0]){const tf=thumb.files[0];if(!tf.type.startsWith('image/')||tf.size>8*1024*1024)throw Error('تصویر بندانگشتی باید تصویر و حداکثر ۸ مگابایت باشد.');thumbPath='thumb-'+crypto.randomUUID()+'.'+(tf.name.split('.').pop()||'jpg');await uploadWithProgress('videos',thumbPath,tf,p=>say(`در حال بارگذاری تصویر بندانگشتی… ${p}٪`));}const {error}=await client.from('gallery_videos').insert({title:title.value.trim(),description:desc.value.trim(),storage_path:path,thumbnail_path:thumbPath});if(error){await client.storage.from('videos').remove([path,...(thumbPath?[thumbPath]:[])]);throw error;}say('ویدئو بارگذاری و ثبت شد.');render();}catch(e){say('بارگذاری ناموفق: '+e.message);}finally{btn.disabled=false;}};work.append(title,desc,file,thumb,btn);
  const rows=await list('gallery_videos');for(const r of rows){const edit=document.createElement('button');edit.textContent='ویرایش عنوان/توضیح';edit.onclick=async()=>{const t=prompt('عنوان',r.title);if(t===null)return;const d=prompt('توضیحات',r.description||'');if(d===null)return;try{await save('gallery_videos',r.id,{title:t,description:d});}catch(e){say(e.message);}};const replace=document.createElement('button');replace.textContent='تعویض فایل ویدئو';const replacement=document.createElement('input');replacement.type='file';replacement.accept='video/mp4,video/webm,video/ogg';replacement.hidden=true;replace.onclick=()=>replacement.click();replacement.onchange=async()=>{const f=replacement.files[0];if(!f)return;if(!/^video\/(mp4|webm|ogg)$/.test(f.type)||f.size>100*1024*1024){say('فایل باید MP4/WebM/OGG و حداکثر ۱۰۰ مگابایت باشد.');return;}replace.disabled=true;try{say('در حال بارگذاری فایل جایگزین…');const path=crypto.randomUUID()+'.'+(f.name.split('.').pop()||'mp4');await uploadWithProgress('videos',path,f,p=>say(`در حال تعویض ویدئو… ${p}٪`));const {error}=await client.from('gallery_videos').update({storage_path:path,updated_at:new Date().toISOString()}).eq('id',r.id);if(error){await client.storage.from('videos').remove([path]);throw error;}const rm=await client.storage.from('videos').remove([r.storage_path]);if(rm.error)say('فایل جایگزین شد، اما پاک‌سازی فایل قدیمی ناموفق بود: '+rm.error.message);render();}catch(e){say('تعویض ناموفق: '+e.message);}finally{replace.disabled=false;}};const del=document.createElement('button');del.className='danger';del.textContent='حذف';del.onclick=async()=>{if(!confirm('ویدئو حذف شود؟'))return;try{const {error}=await client.from('gallery_videos').delete().eq('id',r.id);if(error)throw error;const paths=[r.storage_path,r.thumbnail_path].filter(Boolean);const rm=await client.storage.from('videos').remove(paths);if(rm.error)throw rm.error;render();}catch(e){say(e.message);}};work.append(itemCard(r.title,r.description,[edit,replace,del,replacement]));}return;}
  if(active==='letters'){const title=field('عنوان نامه'),body=field('متن نامه','', 'textarea'),btn=document.createElement('button');btn.textContent='افزودن نامه';btn.onclick=async()=>{if(!title.value.trim()||!body.value.trim()){say('عنوان و متن نامه الزامی است.');return;}btn.disabled=true;try{await save('love_letters',null,{title:title.value.trim(),body:body.value.trim()});}catch(e){say(e.message);}finally{btn.disabled=false;}};work.append(title,body,btn);for(const r of await list('love_letters')){const edit=document.createElement('button');edit.textContent='ویرایش';edit.onclick=async()=>{const t=prompt('عنوان',r.title);if(t===null)return;const b=prompt('متن نامه',r.body);if(b===null)return;try{await save('love_letters',r.id,{title:t,body:b,updated_at:new Date().toISOString()});}catch(e){say(e.message);}};const del=document.createElement('button');del.className='danger';del.textContent='حذف';del.onclick=()=>remove('love_letters',r.id).catch(e=>say(e.message));work.append(itemCard(r.title,r.body,[edit,del]));}return;}
