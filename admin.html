@@ -6,89 +6,121 @@
 <meta name="robots" content="noindex,nofollow">
 <title>پنل مدیریت خاطره‌ها</title>
 <style>
-:root{font-family:Tahoma,Arial,sans-serif;color:#24152B;background:#24152B;line-height:1.8;color-scheme:light}
-*{box-sizing:border-box}body{margin:0;padding:20px}
-main{max-width:1000px;margin:auto}
-header,.panel{background:#fff;border:1px solid #f0d5e0;border-radius:22px;padding:22px;margin:0 0 18px;box-shadow:0 8px 28px #7b315014}
-h1,h2{color:#8d3155;margin-top:0}h1{font-size:1.7rem}h2{font-size:1.2rem}
-small,.hint{color:#8c6c79}
-label{display:block;font-weight:bold;margin:12px 0 5px}
-input,textarea{width:100%;padding:11px;border:1px solid #e5c5d2;border-radius:10px;font:inherit;background:#fff}
-textarea{min-height:90px;resize:vertical}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.field{min-width:0}
-button,.button{border:0;border-radius:999px;padding:11px 18px;background:#8d3155;color:#fff;font:inherit;cursor:pointer;text-decoration:none;display:inline-block;margin:8px 4px 0 0}
-button.secondary{background:#785866}button.danger{background:#a3293f}
-button:disabled{opacity:.5;cursor:wait}
-#app{display:none}.notice{padding:12px;background:#fff1f5;border-radius:12px;margin:12px 0}
-#message{white-space:pre-wrap}.photo-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
-.photo-card{border:1px solid #efd6df;border-radius:14px;padding:10px;overflow:hidden}
-.photo-card img{width:100%;height:130px;object-fit:cover;border-radius:9px}
-.photo-card input{margin-top:6px}
-.photo-card .num{display:block;color:#8d3155;font-weight:bold;margin-bottom:4px}
-.photo-card .row{display:flex;gap:6px;flex-wrap:wrap}
-.photo-card button{padding:7px 12px;margin:6px 0 0;font-size:.85rem}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.datebox{background:#fff7fa;border:1px solid #f0d5e0;border-radius:16px;padding:14px 16px;margin:0 0 16px}
-.datebox h3{margin:0 0 4px;color:#8d3155;font-size:1.05rem}
+:root{--bg:#f5f0f4;--card:#fff;--soft:#fbf7fa;--ink:#2c2030;--mut:#756777;--pri:#783b55;--pri2:#51243b;--acc:#d98ca3;--bd:#eadde5;--danger:#a3293f;--nav:64px;color-scheme:light}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{margin:0;min-height:100vh;font-family:Tahoma,"Segoe UI",Arial,sans-serif;line-height:1.8;color:var(--ink);background:var(--bg);padding:0 0 calc(var(--nav) + 90px)}
+main{width:min(980px,100%);margin:0 auto;padding:14px}
+h1,h2,h3{margin:0;color:var(--pri2);line-height:1.5}
+h1{font-size:clamp(1.15rem,3.5vw,1.6rem)}h2{font-size:1.15rem;margin-bottom:4px}h3{font-size:1rem}
+p{margin:0}.hint,small{color:var(--mut);font-size:.88rem}
+a{color:var(--pri)}
+header,.panel{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:clamp(14px,3vw,24px);margin:0 0 14px;box-shadow:0 8px 26px rgba(48,25,43,.06)}
+header{border-top:4px solid var(--pri);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
+header p{display:none}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+label{display:block;font-weight:700;color:#493344;margin:12px 0 6px;font-size:.93rem}
+input,textarea,select{width:100%;min-height:44px;padding:10px 12px;border:1px solid #e0cfda;border-radius:12px;font:inherit;color:var(--ink);background:#fff}
+textarea{min-height:96px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(217,140,163,.25)}
+input[type=file]{padding:8px}
+button,.button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;border:0;border-radius:12px;padding:8px 16px;margin:0;font:inherit;font-size:.93rem;color:#fff;background:linear-gradient(135deg,var(--pri),var(--pri2));cursor:pointer;text-decoration:none}
+button:hover,.button:hover{filter:brightness(1.1)}
+button.secondary,.button.secondary{background:#efe6ec!important;color:var(--pri2)!important}
+button.danger{background:var(--danger)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,.button:focus-visible,input:focus-visible{outline:3px solid #d6b77a;outline-offset:2px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.savebar{display:flex;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid var(--bd)}
+.savebar button{min-width:160px}
+#loginPanel{width:min(460px,100%);margin:6vh auto 14px}
+.password-wrap{display:flex;gap:8px;align-items:stretch}.password-wrap input{flex:1}
+#app{display:none}
+.nav{position:sticky;top:0;z-index:20;display:flex;gap:6px;padding:8px;margin:0 0 14px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border:1px solid var(--bd);border-radius:16px;box-shadow:0 8px 22px rgba(48,25,43,.08)}
+.nav button{flex:1;flex-direction:column;gap:0;min-height:48px;padding:6px 8px;font-size:.82rem;line-height:1.4;background:transparent;color:var(--mut);border-radius:12px}
+.nav button b{font-size:1.15rem;font-weight:400}
+.nav button.on{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff}
+.sec{display:none}.sec.on{display:block}
+details.grp{border:1px solid var(--bd);border-radius:14px;background:var(--soft);margin:0 0 10px;overflow:hidden}
+details.grp>summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:700;color:var(--pri2);display:flex;justify-content:space-between;align-items:center;min-height:48px}
+details.grp>summary::-webkit-details-marker{display:none}
+details.grp>summary:after{content:"▾";color:var(--pri);transition:transform .2s}
+details.grp[open]>summary:after{transform:rotate(180deg)}
+details.grp>.grid{padding:0 14px 14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 14px}
+.field{min-width:0}.field:has(textarea){grid-column:1/-1}
+.datebox{background:var(--soft);border:1px solid var(--bd);border-radius:14px;padding:14px;margin:0 0 4px}
 .grid3{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:10px}
-.grid3 select{width:100%;padding:11px;border:1px solid #e5c5d2;border-radius:10px;font:inherit;background:#fff}
-#datePreview{margin:8px 0 0}#datePreview.bad{color:#a3293f}
-@media(max-width:650px){.grid3{grid-template-columns:1fr}.grid{grid-template-columns:1fr}body{padding:10px}.panel,header{padding:16px}}
-
-/* Premium responsive admin shell */
-body{min-height:100vh;background:radial-gradient(ellipse at 12% 8%,rgba(217,140,163,.2),transparent 35%),radial-gradient(ellipse at 90% 85%,rgba(214,183,122,.12),transparent 32%),linear-gradient(145deg,#24152B,#51243B);color:#24152B}
-header,.panel{background:linear-gradient(145deg,#FFF9F5,#FFF0F1);border:1px solid rgba(214,183,122,.35);border-radius:24px;padding:clamp(17px,3vw,28px);margin:0 0 20px;box-shadow:0 22px 58px rgba(10,4,15,.22)}
-header{margin-top:10px}
-h1,h2{color:#783B55}
-h1{font-size:clamp(1.35rem,4vw,2rem)}
-h2{font-size:1.2rem}
-small,.hint{color:#806B79}
-label{color:#51243B}
-input,textarea,.grid3 select{border:1px solid rgba(120,59,85,.22);border-radius:12px;background:#fffdfb;color:#24152B;min-height:44px;transition:border-color .2s,box-shadow .2s}
-input:focus,textarea:focus,.grid3 select:focus{outline:none;border-color:#D98CA3;box-shadow:0 0 0 3px rgba(217,140,163,.2)}
-button,.button{background:linear-gradient(135deg,#783B55,#51243B);color:#FFF4EC;border:1px solid rgba(214,183,122,.38);border-radius:999px;padding:11px 20px;transition:transform .18s,filter .18s;min-height:42px}
-button:hover,.button:hover{filter:brightness(1.08);transform:translateY(-1px)}
-button.secondary{background:#A99AAF;color:#24152B}
-button.danger{background:#8A304B;color:#fff}
-button:focus-visible,.button:focus-visible{outline:3px solid #D6B77A;outline-offset:3px}
-button:disabled{opacity:.55;cursor:not-allowed;transform:none}
-.notice{background:#F0C5D2;color:#51243B;border:1px solid rgba(120,59,85,.15)}
-.datebox{background:#FFF4EC;border:1px solid rgba(214,183,122,.35);border-radius:18px}
-.photo-card{background:#fffaf7;border:1px solid rgba(120,59,85,.16);border-radius:18px;padding:12px;box-shadow:0 8px 24px rgba(36,21,43,.07)}
-.photo-card img{height:150px}
-.actions{align-items:center}
-@media(max-width:650px){body{padding:10px}header,.panel{border-radius:19px}.photo-list{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+#datePreview{margin-top:8px;font-weight:700;color:var(--pri)}#datePreview.bad{color:var(--danger)}
+.photo-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:16px}
+.photo-card{background:var(--soft);border:1px solid var(--bd);border-radius:14px;padding:10px;overflow:hidden}
+.photo-card img{width:100%;height:140px;object-fit:cover;border-radius:10px;display:block}
+.photo-card input{margin-top:6px;min-height:40px}
+.photo-card .num{display:block;color:var(--pri);font-weight:700;margin:4px 0}
+.photo-card .row{display:flex;gap:6px;flex-wrap:wrap}.photo-card .row button{flex:1 1 auto;min-height:38px;padding:6px 10px;font-size:.82rem;margin-top:6px}
+.upload-box{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.upload-box .full{grid-column:1/-1}
+#message{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:16px;width:min(560px,calc(100% - 24px));margin:0;padding:10px 14px;border-radius:14px;background:var(--pri2);color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.25);white-space:pre-wrap;font-size:.9rem}
+#message:empty{display:none}
+.p2-admin{padding:0;margin:0;border:0;background:none;box-shadow:none}
+.p2-admin>h2,.p2-admin>.hint{display:none}
+#p2-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px;flex-wrap:nowrap}
+#p2-tabs button{flex:0 0 auto;white-space:nowrap}
+#p2-tabs button.on{background:linear-gradient(135deg,var(--pri),var(--pri2))!important;color:#fff!important}
+#p2-work>h3{margin:0 0 8px}#p2-work>input,#p2-work>textarea{margin:6px 0}#p2-work>button{margin:8px 0 14px}
+#p2-work>input[type=checkbox]{width:auto;min-height:0}
+.p2-admin label{display:flex;gap:8px;align-items:center}
+.p2-admin-item{border:1px solid var(--bd);border-radius:14px;padding:12px;margin:10px 0;background:var(--soft)}
+.p2-admin-item p{white-space:pre-wrap;word-break:break-word;color:var(--mut);margin:4px 0 8px}
+.p2-admin-item button{margin:4px 0 0 6px;min-height:38px}
+.p2-status{margin-top:10px;white-space:pre-wrap;color:var(--pri2);background:#f8edf2;border-radius:10px;padding:0 10px}.p2-status:empty{display:none}
+@media(max-width:700px){
+ main{padding:10px}
+ .nav{position:fixed;top:auto;bottom:0;left:0;right:0;margin:0;border-radius:18px 18px 0 0;padding:6px 6px calc(6px + env(safe-area-inset-bottom));border-width:1px 0 0}
+ #message{bottom:calc(var(--nav) + 16px + env(safe-area-inset-bottom))}
+ .grid,.grid3,.upload-box{grid-template-columns:1fr}
+ .photo-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.photo-card img{height:110px}
+ .savebar button,.actions>.button,header .actions>*{flex:1 1 auto}
+ .savebar button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 <main>
 <header>
 <h1>🔐 پنل مدیریت خاطره‌ها</h1>
-<p>از اینجا می‌توانی متن‌های صفحه، تاریخ شمارنده و گالری عکس‌ها را تغییر بدهی. تغییرات ذخیره‌شده برای همه بازدیدکنندگان نمایش داده می‌شوند.</p>
 <div class="actions">
-<a class="button" id="homeLink" href="index.html">مشاهده صفحه اصلی</a>
-<a class="button secondary" id="previewLink" href="index.html" target="_blank" rel="noopener" style="display:none;background:#785866">👁 پیش‌نمایش در تب جدید</a>
-<button class="danger" id="exitBtn" type="button" style="display:none">🚪 خروج از پنل</button>
+<a class="button secondary" id="homeLink" href="index.html">صفحه اصلی</a>
+<a class="button secondary" id="previewLink" href="index.html" target="_blank" rel="noopener" style="display:none">👁 پیش‌نمایش</a>
+<button class="danger" id="exitBtn" type="button" style="display:none">🚪 خروج</button>
 </div>
 </header>
 
 <section class="panel" id="loginPanel">
 <h2>ورود مدیر</h2>
-<p class="hint">حساب مدیر باید از قبل در Supabase ساخته شده باشد و شناسه‌اش در جدول admin_users ثبت شده باشد.</p>
+<p class="hint">حساب مدیر باید از قبل در Supabase ساخته شده و در جدول admin_users ثبت شده باشد.</p>
 <label for="email">ایمیل مدیر</label><input id="email" type="email" autocomplete="username" placeholder="admin@example.com">
-<label for="password">رمز عبور</label><div class="password-wrap"><input id="password" type="password" autocomplete="current-password"><button id="togglePassword" class="secondary" type="button" aria-pressed="false" style="margin-top:8px">نمایش رمز</button></div>
-<div class="actions"><button id="loginBtn">ورود</button></div>
+<label for="password">رمز عبور</label><div class="password-wrap"><input id="password" type="password" autocomplete="current-password"><button id="togglePassword" class="secondary" type="button" aria-pressed="false">نمایش رمز</button></div>
+<div class="actions" style="margin-top:14px"><button id="loginBtn" style="width:100%">ورود</button></div>
 </section>
 
 <div id="app">
-<section class="panel">
-<h2>متن‌ها و تنظیمات صفحه</h2>
-<p class="hint">برای حفظ خط‌های نامه، متن نامه را با خط جدید وارد کن. پس از ذخیره، صفحه اصلی را تازه‌سازی کن.</p>
+<nav class="nav" id="mainNav" aria-label="بخش‌های پنل">
+<button type="button" data-sec="texts"><b>✏️</b>متن‌ها</button>
+<button type="button" data-sec="date"><b>📅</b>تاریخ</button>
+<button type="button" data-sec="photos"><b>📸</b>عکس‌ها</button>
+<button type="button" data-sec="extras"><b>✨</b>امکانات</button>
+</nav>
+
+<section class="panel sec" id="sec-texts" data-sec="texts">
+<div class="sec-head"><div><h2>متن‌های صفحه</h2><p class="hint">هر بخش را باز کن و ویرایش کن؛ برای حفظ خط‌های نامه از خط جدید استفاده کن.</p></div></div>
+<div id="settingsFields"></div>
+<div class="savebar"><button id="saveSettings">💾 ذخیره متن‌ها</button></div>
+</section>
+
+<section class="panel sec" id="sec-date" data-sec="date">
+<div class="sec-head"><div><h2>تاریخ شروع شمارنده</h2><p class="hint">تاریخ را شمسی وارد کن؛ در پایگاه داده میلادی ذخیره و روی صفحه اصلی شمسی نمایش داده می‌شود.</p></div></div>
 <div class="datebox">
-<h3>📅 تاریخ شروع شمارنده (شمسی)</h3>
-<p class="hint">تاریخ را شمسی وارد کن؛ در پایگاه داده به‌صورت میلادی و امن ذخیره می‌شود و روی صفحه اصلی هم شمسی نشان داده می‌شود.</p>
 <div class="grid3">
 <div><label for="jy">سال</label><input id="jy" type="number" inputmode="numeric" min="1300" max="1700" placeholder="۱۴۰۵"></div>
 <div><label for="jm">ماه</label><select id="jm"></select></div>
@@ -96,27 +128,27 @@ button:disabled{opacity:.55;cursor:not-allowed;transform:none}
 </div>
 <p class="hint" id="datePreview"></p>
 </div>
-<div id="settingsFields" class="grid"></div>
-<div class="actions"><button id="saveSettings">ذخیره تنظیمات</button></div>
+<div class="savebar"><button type="button" onclick="document.getElementById('saveSettings').click()">💾 ذخیره تاریخ</button></div>
 </section>
 
-<section class="panel">
-<h2>مدیریت عکس‌ها</h2>
-<div class="datebox" id="starterBox" style="display:none">
-<h3>📦 انتقال عکس‌های اولیه به فضای ابری</h3>
-<p class="hint">سه عکس اولیه صفحه (پوشه starter-photos) با یک کلیک به Supabase منتقل می‌شوند تا مثل بقیه عکس‌ها قابل ویرایش، جابجایی، تعویض و حذف باشند. این کار فقط یک‌بار لازم است و باید پوشه starter-photos روی سایت آپلود شده باشد.</p>
-<button id="starterBtn" type="button">انتقال عکس‌های اولیه</button>
+<section class="panel sec" id="sec-photos" data-sec="photos">
+<div class="sec-head"><div><h2>مدیریت عکس‌ها</h2><p class="hint">ترتیب نمایش در صفحه اصلی همان ترتیب فهرست پایین است. عکس‌های بزرگ خودکار بهینه می‌شوند.</p></div></div>
+<div class="datebox" id="starterBox" style="display:none;margin-bottom:14px">
+<h3>📦 انتقال عکس‌های اولیه</h3>
+<p class="hint">سه عکس اولیه (پوشه starter-photos) یک‌بار به Supabase منتقل می‌شوند تا قابل ویرایش و حذف باشند.</p>
+<button id="starterBtn" type="button" style="margin-top:8px">انتقال عکس‌های اولیه</button>
 </div>
-<label for="photoFiles">انتخاب یک یا چند عکس</label>
-<input id="photoFiles" type="file" accept="image/*" multiple>
-<label for="newPhotoTitle">عنوان عکس‌های جدید</label>
-<input id="newPhotoTitle" type="text" value="خاطره جدید 🤍" maxlength="120">
-<p class="hint">عکس‌های بزرگ قبل از بارگذاری خودکار بهینه می‌شوند (حداکثر ۱۸۰۰ پیکسل) تا روی موبایل سریع باز شوند. ترتیب نمایش در صفحه اصلی همان ترتیب فهرست زیر است.</p>
-<button id="uploadBtn">بارگذاری عکس‌ها</button>
+<div class="upload-box">
+<div class="full"><label for="photoFiles">انتخاب یک یا چند عکس</label><input id="photoFiles" type="file" accept="image/*" multiple></div>
+<div class="full"><label for="newPhotoTitle">عنوان عکس‌های جدید</label><input id="newPhotoTitle" type="text" value="خاطره جدید 🤍" maxlength="120"></div>
+</div>
+<div class="savebar" style="border:0;margin-top:10px;padding:0"><button id="uploadBtn">⬆ بارگذاری عکس‌ها</button></div>
 <div id="photoList" class="photo-list"></div>
 </section>
+
+<section class="panel sec" id="sec-extras" data-sec="extras"></section>
 </div>
-<div class="panel notice" id="message" role="status">در حال بررسی تنظیمات…</div>
+<div id="message" role="status" aria-live="polite">در حال بررسی تنظیمات…</div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
@@ -212,13 +244,21 @@ button:disabled{opacity:.55;cursor:not-allowed;transform:none}
  [jyEl,jmEl,jdEl].forEach(el=>el.addEventListener("input",updateDatePreview));
  function makeFields(){
   const wrap=document.getElementById("settingsFields");
-  fields.forEach(([key,label,type])=>{
-   const div=document.createElement("div");div.className="field";
-   const lab=document.createElement("label");lab.htmlFor="f_"+key;lab.textContent=label;
-   const el=document.createElement(type==="textarea"?"textarea":"input");
-   el.id="f_"+key;el.dataset.key=key;
-   if(type!=="textarea")el.type="text";
-   div.append(lab,el);wrap.appendChild(div);
+  const groups=[["🚪 صفحه خوش‌آمد",k=>k.startsWith("gate_")],["🌸 بخش اصلی (بالای صفحه)",k=>k.startsWith("hero_")],["💌 نامه",k=>k.startsWith("letter_")||k==="signature"],["📸 گالری",k=>k.startsWith("gallery_")],["⏳ شمارنده",k=>k.startsWith("counter_")],["🤫 رازها",k=>k.startsWith("secret_")],["🏁 پایان و پایین صفحه",k=>k.startsWith("ending_")||k==="footer_text"]];
+  groups.forEach(([title,test],gi)=>{
+   const list=fields.filter(f=>test(f[0]));if(!list.length)return;
+   const det=document.createElement("details");det.className="grp";if(gi===0)det.open=true;
+   const sum=document.createElement("summary");sum.textContent=title;
+   const grid=document.createElement("div");grid.className="grid";
+   list.forEach(([key,label,type])=>{
+    const div=document.createElement("div");div.className="field";
+    const lab=document.createElement("label");lab.htmlFor="f_"+key;lab.textContent=label;
+    const el=document.createElement(type==="textarea"?"textarea":"input");
+    el.id="f_"+key;el.dataset.key=key;
+    if(type!=="textarea")el.type="text";
+    div.append(lab,el);grid.appendChild(div);
+   });
+   det.append(sum,grid);wrap.appendChild(det);
   });
  }
  async function loadSettings(){
@@ -421,6 +461,15 @@ button:disabled{opacity:.55;cursor:not-allowed;transform:none}
  if(!configured||!window.supabase?.createClient){say("ابتدا فایل supabase-config.js را با آدرس پروژه و کلید عمومی پر کن. سپس مراحل README.txt را انجام بده.");loginPanel.style.display="none";}
  else {sb=window.supabase.createClient(cfg.url,cfg.anonKey,{auth:{storage:window.sessionStorage,persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});wireAuth();checkSession().catch(e=>say("خطا در بارگذاری پنل: "+e.message));}
 })();
+</script>
+<script>
+(()=>{const nav=document.getElementById("mainNav");if(!nav)return;
+const show=id=>{if(!document.getElementById("sec-"+id))id="texts";
+document.querySelectorAll(".sec").forEach(s=>s.classList.toggle("on",s.id==="sec-"+id));
+nav.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.sec===id));
+try{sessionStorage.setItem("adm_sec",id)}catch(e){}window.scrollTo({top:0})};
+nav.addEventListener("click",e=>{const b=e.target.closest("button");if(b)show(b.dataset.sec)});
+let s="texts";try{s=sessionStorage.getItem("adm_sec")||"texts"}catch(e){}show(s);})();
 </script>
 <script src="phase2-admin.js"></script>
 </body>
