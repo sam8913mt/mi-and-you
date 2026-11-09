@@ -1,0 +1,57 @@
+ME & YOU — Upgrade and Verification Notes
+==========================================
+
+What was inspected
+------------------
+The supplied archive contains 13 entries: index.html, admin.html, site.js,
+jdate.js, supabase-config.js, supabase_setup.sql, README.txt, music.mp3,
+and three starter photos.
+
+Changes made
+------------
+- Applied the requested Deep Plum / Wine / Burgundy / Rose / Champagne palette
+  to the public experience and admin panel.
+- Refined surfaces, spacing, shadows, buttons, focus states, responsive styling,
+  reduced-motion behavior, and mobile layouts without replacing the existing
+  multi-file architecture.
+- Added an accessible password visibility toggle to the existing admin login.
+- Preserved existing Supabase authentication, content loading, gallery upload,
+  replacement, ordering, and deletion logic.
+- Kept the existing Supabase public/publishable key configuration as-is. No
+  service-role key was added or exposed.
+
+Important scope and verification limits
+----------------------------------------
+The uploaded project is a small existing site, not a complete implementation
+of all features in the master request. Its actual current feature set includes
+a welcome screen, one letter, a photo gallery, a relationship-start counter,
+five revealable secret cards, and an admin interface for text/date settings
+and photo management.
+
+The archive does NOT currently contain implemented video management, a
+meeting countdown, Gorgan–Tehran map/routing, quizzes, a poster editor,
+database-backed multiple letters, secret-message CRUD, or a general-purpose
+content-management dashboard. Those features have NOT been represented as
+completed in this upgrade. Adding them safely requires product decisions and,
+for cross-device persistence, a reviewed database/storage design and explicit
+migration. No production database was contacted or changed.
+
+Database migration
+------------------
+No database migration was required for the changes actually made. The existing
+supabase_setup.sql was preserved unchanged. No production SQL was executed.
+
+Tests completed
+---------------
+- Archive extraction and inventory completed.
+- JavaScript syntax checks completed for inline and external JavaScript.
+- HTML parser checks completed for both HTML documents.
+- Required local script/audio/photo references checked against project files.
+- ZIP integrity test completed.
+
+Not tested
+----------
+- Live Supabase login, RLS, Storage uploads/deletes, or cross-device sync.
+- Browser rendering or interactive end-to-end flows on physical devices.
+- External hosting/deployment behavior.
+These require the user's browser and Supabase environment.

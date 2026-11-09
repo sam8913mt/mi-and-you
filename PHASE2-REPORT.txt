@@ -1,0 +1,39 @@
+ME & YOU — Phase 2 Implementation Report
+========================================
+
+Implemented in this package
+---------------------------
+- Public responsive video gallery with lazy video loading, metadata and optional thumbnails.
+- Admin video upload with XHR byte-progress reporting, MIME/size validation, metadata editing, replacement and deletion.
+- Responsive Leaflet/OpenStreetMap map with Tehran and Gorgan markers and a direct geodesic distance calculation; no road distance/time is fabricated.
+- Quiz with progress, answer selection, score, result and replay. Correct answers are checked through a database RPC; the public view omits correct_index.
+- Poster editor with three palette-consistent templates, Persian text, color, text-position control, optional gallery image, live preview and PNG export.
+- Multiple database-backed letters with admin create/read/update/delete and public reading view.
+- Private messages with admin CRUD and a shared passphrase gate. The passphrase is stored as a bcrypt hash; public content is returned only through a validating RPC. Opened state is persisted.
+- Meeting countdown backed by the existing site_content table and editable ISO-8601 date/time in the admin panel.
+- Phase 2 admin controls are appended to the existing admin dashboard and reuse its Supabase auth session and admin allowlist.
+- Additive SQL migration with RLS, grants, storage bucket and RPC functions.
+
+Important security and deployment notes
+---------------------------------------
+- Run the original supabase_setup.sql first if it has not already been applied, then review and run supabase-migration.sql manually in Supabase SQL Editor.
+- No production SQL was executed and no live Supabase data was read or modified during this work.
+- Public video files and letters are intentionally public-read; writes require the existing is_site_admin() allowlist.
+- Private messages are not anonymously readable. The public page requires the configured shared passphrase; use a long, unique passphrase.
+- The project has no independent visitor identity system; the shared passphrase is the access control for the couple's shared private-message area.
+- Map tiles require network access to OpenStreetMap. Poster image export depends on browser canvas/CORS permission for the chosen image.
+- Video maximum size is 100 MiB; bucket allows MP4, WebM, OGG and image thumbnails.
+
+Tests actually performed
+------------------------
+- JavaScript syntax checked with Node.js for site.js, jdate.js, phase2-public.js, phase2-admin.js and inline scripts extracted from both HTML files.
+- HTML parsing, required local asset references and ZIP integrity checked.
+- SQL migration reviewed statically for table/policy/grant/function consistency; it was not executed against PostgreSQL/Supabase.
+
+Not tested / requires user's environment
+----------------------------------------
+- Live Supabase authentication, RLS behavior, Storage upload/playback/deletion, RPCs and cross-device synchronization.
+- Real browser rendering, mobile device behavior, canvas PNG export with remote images, external map tiles and browser console errors.
+- Deployment on GitHub Pages and actual database migration execution.
+
+No existing production records were changed by this package. Existing site files and configuration were retained.
