@@ -81,6 +81,8 @@ details.grp>.grid{padding:0 14px 14px}
  .savebar button{width:100%}
 }
 
+
+.who-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px;padding:8px 12px;border-radius:14px;background:#fff;border:1px solid var(--bd)}.who-bar span{color:var(--mut);font-size:.9rem;margin-inline-end:auto}.who-bar button{min-height:36px;padding:4px 16px;font-size:.9rem}.who-bar button.on{background:linear-gradient(135deg,var(--pri),var(--pri2))!important;color:#fff!important}
 /* ---- Meeting date card + panel polish ---- */
 body{background:radial-gradient(1200px 500px at 85% -10%,rgba(217,140,163,.22),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(214,183,122,.18),transparent 55%),var(--bg);background-attachment:fixed}
 header{background:linear-gradient(135deg,#fff,#fbeff4);border-top:0;position:relative;overflow:hidden}
@@ -138,6 +140,21 @@ select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #e0cfda;bor
 <button type="button" data-sec="quiz"><b>💗</b>آزمون</button>
 <button type="button" data-sec="meeting"><b>⏳</b>تاریخ دیدار</button>
 <button type="button" data-sec="route"><b>🗺️</b>نقشه و فاصله</button>
+<button type="button" data-sec="timeline"><b>🕰️</b>خط زمانی</button>
+<button type="button" data-sec="reasons"><b>💕</b>دلیل‌ها</button>
+<button type="button" data-sec="wishes"><b>🌠</b>آرزوها</button>
+<button type="button" data-sec="songs"><b>🎶</b>آهنگ‌ها</button>
+<button type="button" data-sec="voice"><b>🎙️</b>صدای من</button>
+<button type="button" data-sec="funny"><b>😂</b>خنده‌دار</button>
+<button type="button" data-sec="learned"><b>🌱</b>یاد گرفتم</button>
+<button type="button" data-sec="coupons"><b>🎟️</b>کوپن‌ها</button>
+<button type="button" data-sec="promises"><b>🤝</b>قول‌ها</button>
+<button type="button" data-sec="whenever"><b>🫂</b>اگر دلت گرفت</button>
+<button type="button" data-sec="guestbook"><b>📖</b>دفترچه</button>
+<button type="button" data-sec="album"><b>📷</b>آلبوم مشترک</button>
+<button type="button" data-sec="dquestions"><b>❓</b>سؤال روز</button>
+<button type="button" data-sec="capsules"><b>⏳</b>صندوقچه</button>
+<button type="button" data-sec="final"><b>🎁</b>سورپرایز نهایی</button>
 </nav>
 
 <section class="panel sec" id="sec-texts" data-sec="texts">
@@ -201,6 +218,81 @@ select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #e0cfda;bor
 </section>
 <section class="panel sec p2sec" id="sec-route" data-sec="route">
 <div class="sec-head"><div><h2>🗺️ نقشه و فاصله</h2><p class="hint">فاصلهٔ جاده‌ای تهران تا گرگان که روی نقشهٔ صفحه اصلی نشان داده می‌شود.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-timeline" data-sec="timeline">
+<div class="sec-head"><div><h2>🕰️ خط زمانی</h2><p class="hint">لحظه‌های مهم قصه‌ی شما با تاریخ شمسی.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-reasons" data-sec="reasons">
+<div class="sec-head"><div><h2>💕 دلیل‌ها</h2><p class="hint">دلیل‌های دوست داشتن؛ هر کدام با یک لمس در سایت باز می‌شود.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-wishes" data-sec="wishes">
+<div class="sec-head"><div><h2>🌠 آرزوها</h2><p class="hint">آرزوها و برنامه‌های مشترک؛ بعد از انجام، تیکشان را بزن.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-songs" data-sec="songs">
+<div class="sec-head"><div><h2>🎶 آهنگ‌ها</h2><p class="hint">آهنگ‌های مهم با یک جمله و لینک اختیاری.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-voice" data-sec="voice">
+<div class="sec-head"><div><h2>🎙️ صدای من</h2><p class="hint">پیام‌های صوتی کوتاه (حداکثر ۲۵ مگابایت).</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-funny" data-sec="funny">
+<div class="sec-head"><div><h2>😂 خنده‌دار</h2><p class="hint">لحظه‌ها و جمله‌های خنده‌دار مشترک.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-learned" data-sec="learned">
+<div class="sec-head"><div><h2>🌱 یاد گرفتم</h2><p class="hint">چیزهایی که از ماجی یاد گرفته‌ای.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-coupons" data-sec="coupons">
+<div class="sec-head"><div><h2>🎟️ کوپن‌ها</h2><p class="hint">کوپن‌های عشق؛ ماجی با رمز مشترک یکی را استفاده می‌کند و اینجا می‌بینی.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-promises" data-sec="promises">
+<div class="sec-head"><div><h2>🤝 قول‌ها</h2><p class="hint">قول‌هایی که به او می‌دهی.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-whenever" data-sec="whenever">
+<div class="sec-head"><div><h2>🫂 اگر دلت گرفت</h2><p class="hint">پاکت‌هایی برای حال‌های خاص (وقتی…).</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-guestbook" data-sec="guestbook">
+<div class="sec-head"><div><h2>📖 دفترچه</h2><p class="hint">پیام‌های دفترچه مشترک؛ فقط مشاهده و حذف.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-album" data-sec="album">
+<div class="sec-head"><div><h2>📷 آلبوم مشترک</h2><p class="hint">عکس‌هایی که هر دو اضافه می‌کنید؛ هر عکس با نام آپلودکننده نشان داده می‌شود.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-dquestions" data-sec="dquestions">
+<div class="sec-head"><div><h2>❓ سؤال روز</h2><p class="hint">سؤال‌هایی که هر روز یکی‌شان در سایت می‌آید و هر دو جدا جواب می‌دهید.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-capsules" data-sec="capsules">
+<div class="sec-head"><div><h2>⏳ صندوقچه</h2><p class="hint">صندوقچه‌های زمانی مهر و موم شده؛ فقط مشاهده عنوان و حذف.</p></div></div>
+<div class="p2w"></div>
+<p class="p2-status" role="status"></p>
+</section>
+<section class="panel sec p2sec" id="sec-final" data-sec="final">
+<div class="sec-head"><div><h2>🎁 سورپرایز نهایی</h2><p class="hint">این متن‌ها تا روز دیدار برای کسی نمایش داده نمی‌شوند.</p></div></div>
 <div class="p2w"></div>
 <p class="p2-status" role="status"></p>
 </section>

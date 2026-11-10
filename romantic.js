@@ -91,10 +91,12 @@
   if (main) {
     const closest = (sel, up) => { const el = $(sel); return el ? el.closest(up) : null; };
     const order = [
-      $("#letter"), closest("#photos", "section"), $(".counter"), $("#meetingCountdown"),
-      $("#distanceSection"), $("#videosSection"), $("#lettersSection"),
-      closest(".secret-grid", "section"), $("#quizSection"), $("#posterSection"),
-      $("#privateMessagesSection"), $(".ending")
+      $("#letter"), closest("#photos", "section"), $(".counter"), $("#missSection"), $("#timelineSection"), $("#meetingCountdown"),
+      $("#distanceSection"), $("#albumSection"), $("#reasonsSection"), $("#videosSection"), $("#voiceSection"), $("#lettersSection"),
+      $("#songsSection"), $("#funnySection"), $("#learnedSection"), closest(".secret-grid", "section"),
+      $("#promisesSection"), $("#wishesSection"), $("#couponsSection"), $("#dailySection"), $("#moodSection"), $("#gameSection"), $("#quizSection"),
+      $("#wheneverSection"), $("#capsuleSection"), $("#guestbookSection"), $("#posterSection"), $("#privateMessagesSection"),
+      $("#finalSection"), $(".ending")
     ].filter(Boolean);
     order.forEach((el) => main.appendChild(el));
   }
