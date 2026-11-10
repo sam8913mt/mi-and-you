@@ -167,3 +167,7 @@ begin
 end; $$;
 revoke all on function public.mark_private_message_opened(uuid,text) from public;
 grant execute on function public.mark_private_message_opened(uuid,text) to anon, authenticated;
+
+
+-- Road distance Tehran-Gorgan (editable from the admin panel). Safe to re-run.
+insert into public.site_content(key,value) values ('road_distance_km','387') on conflict (key) do nothing;
