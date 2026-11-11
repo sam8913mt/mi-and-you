@@ -1,0 +1,48 @@
+/* ME & YOU — magic2: بوم مشترک، ضربان هماهنگ، هوا، کارت خراشیدنی، «چنین روزی»، ماهگرد بعدی، ژیروسکوپ */
+.m2-box{position:relative;border-radius:24px;overflow:hidden;border:1px solid rgba(214,183,122,.5);background:linear-gradient(180deg,#fffaf6,#fff0f4);box-shadow:0 18px 44px rgba(60,20,40,.28)}
+.m2-tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0 0}
+.m2-tools button,.m2-btn{padding:9px 16px;border-radius:99px;border:1px solid #E3BFCC;background:#fff;color:#783B55;-webkit-text-fill-color:#783B55;font-size:.95rem}
+.m2-tools button.on{background:linear-gradient(135deg,#C2607F,#783B55);color:#fff;-webkit-text-fill-color:#fff;border-color:transparent}
+.m2-sw{width:30px!important;height:30px;padding:0!important;border-radius:50%!important;border:2px solid #fff!important;box-shadow:0 0 0 1.5px #E3BFCC}
+.m2-sw.sel{box-shadow:0 0 0 3px #783B55}
+
+/* بوم */
+#drawSection canvas{display:block;width:100%;height:clamp(260px,46dvh,420px);touch-action:pan-y;background:transparent}
+#drawSection canvas.on{touch-action:none;cursor:crosshair}
+.m2-note{text-align:center;color:#EBD7E0;-webkit-text-fill-color:#EBD7E0;font-size:.9rem;margin-top:8px}
+
+/* ضربان مشترک */
+#pulseSection .pulse-stage{display:grid;place-items:center;padding:26px 10px;background:radial-gradient(circle at 50% 50%,#5a2447,#24152B 70%);border-radius:24px;border:1px solid rgba(214,183,122,.5)}
+#pulseBtn{width:min(60vw,210px);height:min(60vw,210px);border-radius:50%;border:2px solid rgba(246,217,168,.6);background:radial-gradient(circle at 35% 30%,#ef5b7c,#a31f42);font-size:4.6rem;display:grid;place-items:center;color:#fff;-webkit-text-fill-color:initial;box-shadow:0 0 0 0 rgba(239,91,124,.5);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#pulseBtn.me{animation:lubdub 1.2s infinite;box-shadow:0 0 40px rgba(239,91,124,.6)}
+#pulseBtn.both{animation:lubdub 1.2s infinite;box-shadow:0 0 70px 14px rgba(246,217,168,.75);background:radial-gradient(circle at 35% 30%,#ffd0dd,#ef5b7c 55%,#a31f42)}
+#pulseSection .pulse-msg{margin-top:14px;color:#F6D9A8;-webkit-text-fill-color:#F6D9A8;text-align:center;min-height:1.8em;font-size:1.05rem}
+
+/* هوا */
+.wx{margin:14px auto 0;max-width:520px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wx-c{padding:12px;border-radius:18px;background:rgba(255,255,255,.1);border:1px solid rgba(214,183,122,.4);text-align:center;color:#FFF4EC;-webkit-text-fill-color:#FFF4EC}
+.wx-c .wx-i{font-size:2.2rem;line-height:1.2}
+.wx-c b{display:block;font-size:1.3rem;color:#F6D9A8;-webkit-text-fill-color:#F6D9A8}
+.wx-c small{color:#E8D8DF;-webkit-text-fill-color:#E8D8DF}
+
+/* کارت خراشیدنی */
+#scratchSection .sc-box{position:relative;max-width:360px;margin:0 auto;height:170px;border-radius:22px;overflow:hidden;border:2px solid #F0C5D2;box-shadow:0 18px 40px rgba(60,20,40,.3)}
+#scratchSection .sc-under{position:absolute;inset:0;display:grid;place-items:center;padding:16px;text-align:center;background:linear-gradient(160deg,#fff,#FFF1F5);color:#783B55;-webkit-text-fill-color:#783B55;font-size:1.1rem;line-height:2;font-family:var(--nast)}
+#scratchSection canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;transition:opacity .8s}
+#scratchSection canvas.gone{opacity:0;pointer-events:none}
+
+/* چنین روزی + ماهگرد بعدی */
+.m2-card{margin:14px auto 0;max-width:520px;padding:14px 16px;border-radius:20px;background:rgba(255,255,255,.1);border:1px solid rgba(214,183,122,.4);text-align:center;color:#FFF4EC;-webkit-text-fill-color:#FFF4EC;line-height:1.9}
+.m2-card b{color:#F6D9A8;-webkit-text-fill-color:#F6D9A8}
+.nm-heart{position:relative;width:64px;height:58px;margin:8px auto 4px}
+.nm-heart svg{width:100%;height:100%;overflow:visible}
+
+/* ژیروسکوپ */
+.photo img{will-change:auto}
+#photos.gyro .photo:not(.skeleton) img{transform:translate3d(calc(var(--gx,0)*1px),calc(var(--gy,0)*1px),0) scale(1.1)}
+
+/* قلب مخفی */
+.secret-heart{display:inline-block;margin:0 0 6px;padding:4px 10px;font-size:1.3rem;color:#F0C5D2;-webkit-text-fill-color:#F0C5D2;opacity:.75;background:none;user-select:none;-webkit-user-select:none}
+.secret-heart:active{transform:scale(.85)}
+.fortune{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:430;width:min(360px,calc(100vw - 28px));padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#783B55,#4a2036);color:#FFF4EC;-webkit-text-fill-color:#FFF4EC;text-align:center;line-height:1.9;border:1px solid rgba(246,217,168,.5);box-shadow:0 16px 40px rgba(0,0,0,.5);animation:nfIn .6s ease}
+.fortune b{display:block;color:#F6D9A8;-webkit-text-fill-color:#F6D9A8}

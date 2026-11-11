@@ -1,0 +1,33 @@
+راه‌اندازی اعلان‌ها (فقط یک‌بار) — این پوشه را روی GitHub آپلود نکن (کلید خصوصی داخلش است)
+==========================================================================
+
+۱) Supabase > SQL Editor: فایل database/05-supabase-migration-notifications.sql را کامل اجرا کن.
+
+۲) Supabase > Edge Functions > Deploy a new function (از ادیتور داشبورد):
+   - نام تابع: send-push
+   - کد فایل send-push-edge-function.ts را کامل جایگزین کن و Deploy بزن.
+   - در تنظیمات تابع، گزینهٔ «Verify JWT» را خاموش کن.
+
+۳) Supabase > Edge Functions > Secrets (یا Project Settings > Edge Functions) این چهار مقدار را اضافه کن:
+   PUSH_SECRET        = 47c6e6e1a7e1bdf59f3178cc52212a386296f4eced47c080
+   VAPID_PUBLIC_KEY   = BLmrDJ2ZZAP9QcajpkJlBY-IqHXMNgFFjzVBdV-9-aWvhhaPTT4M_kgm8gdbLmgyr511cSYh29pmDeEdvhoKjrY
+   VAPID_PRIVATE_KEY  = TZ3I9QhmK1BP2qyk6ZtjC7IS3dGAkbPRZ5tkuwFlxKk
+   VAPID_SUBJECT      = mailto:ایمیل-خودت@example.com
+
+۴) فایل‌های سایت را روی GitHub Pages جایگزین کن (کل فایل‌های سایت: index.html, admin.html, sw.js, manifest.webmanifest و پوشه‌های css, js, assets).
+
+۵) روی هر دو گوشی: سایت را باز کن، با رمز مشترک وارد شو، نام خودت را انتخاب کن،
+   دکمهٔ 🔔 پایین-چپ را بزن و «فعال‌سازی اعلان‌ها» را تأیید کن.
+   آیفون: ابتدا Add to Home Screen و بعد از همان آیکون باز کن (iOS 16.4+).
+
+اعلان‌ها چه چیزهایی را می‌فرستند
+-------------------------------
+دلتنگی (فوری)، حال و وضعیت روزانهٔ طرف مقابل، ماهگرد و سالگرد (هر روز ۰۹:۰۰ تهران، بر اساس تاریخ شمسی)،
+هر ۱۰۰ روز، روز دیدار، باز شدن صندوقچهٔ زمانی، نامه/دفترچه/جواب سؤال امروز/آرزو/کوپن/آلبوم/آزمون
+و عکس، ویدئو و پیام خصوصی تازه.
+در صورت فعال نبودن Push، تا وقتی صفحه باز است هر ۴۵ ثانیه بررسی می‌شود و اعلان نشان داده می‌شود.
+اگر آدرس پروژه Supabase را عوض کردی، آدرس داخل جدول push_settings را هم اصلاح کن.
+
+چت (اختیاری، برای صفحهٔ چت)
+---------------------------
+فایل database/06-supabase-migration-chat.sql را هم در SQL Editor اجرا کن (بعد از فایل 01).

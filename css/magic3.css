@@ -1,0 +1,73 @@
+/* ME & YOU — magic3: چت، بازی دونفره، فیلم خاطرات، شمارنده دلتنگی، فصل‌ها، پیشرفت آرزوها */
+#seasonFx{position:fixed;inset:0;width:100%;height:100%;z-index:18;pointer-events:none}
+#fwCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:620;pointer-events:none}
+
+/* آرزوها */
+.wish-bar{height:6px;border-radius:99px;background:rgba(194,96,127,.18);overflow:hidden;margin-top:6px;flex-basis:100%}
+.wish-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#F6D9A8,#ef5b7c);transition:width .6s ease}
+
+/* شمارندهٔ دلتنگی */
+.ms-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:420px;margin:0 auto}
+.ms-card{padding:14px 10px;border-radius:20px;background:rgba(255,255,255,.1);border:1px solid rgba(214,183,122,.4);text-align:center;color:#FFF4EC;-webkit-text-fill-color:#FFF4EC}
+.ms-card b{display:block;font-size:2.2rem;line-height:1.3;color:#F6D9A8;-webkit-text-fill-color:#F6D9A8}
+.ms-card small{color:#E8D8DF;-webkit-text-fill-color:#E8D8DF}
+.ms-act{text-align:center;margin-top:14px}
+.ms-act button{padding:13px 30px;border-radius:99px;background:linear-gradient(135deg,#ef5b7c,#a31f42);color:#fff;-webkit-text-fill-color:#fff;font-size:1.1rem;box-shadow:0 10px 26px rgba(163,31,66,.45)}
+.ms-note{text-align:center;color:#EBD7E0;-webkit-text-fill-color:#EBD7E0;font-size:.9rem;margin-top:8px;min-height:1.4em}
+
+/* بازی */
+.g-wrap{max-width:340px;margin:0 auto;text-align:center}
+.g-status{color:#F6D9A8;-webkit-text-fill-color:#F6D9A8;min-height:2em;margin-bottom:10px;font-size:1.05rem}
+.g-board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.g-cell{aspect-ratio:1;border-radius:18px;border:1px solid rgba(214,183,122,.5);background:rgba(255,255,255,.1);font-size:2.4rem;display:grid;place-items:center;color:#fff;-webkit-text-fill-color:initial;transition:transform .15s,background .2s}
+.g-cell:active{transform:scale(.94)}
+.g-cell.win{background:rgba(246,217,168,.35);border-color:#F6D9A8;animation:lubdub 1s infinite}
+.g-score{margin-top:12px;color:#EBD7E0;-webkit-text-fill-color:#EBD7E0;font-size:.95rem}
+.g-wrap .m2-tools{margin-top:12px}
+
+/* فیلم خاطرات */
+#movie{position:fixed;inset:0;z-index:660;background:#000;color:#fff;overflow:hidden;opacity:0;animation:inFade .6s ease forwards}
+#movie .mv-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.1s ease;will-change:opacity,transform}
+#movie .mv-img.show{opacity:1;animation:mvkb 6.5s ease-out forwards}
+@keyframes mvkb{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.14) translate(var(--mx,0),var(--my,0))}}
+#movie .mv-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 25%,transparent 60%,rgba(0,0,0,.65))}
+#movie .mv-cap{position:absolute;left:16px;right:16px;bottom:calc(52px + env(safe-area-inset-bottom,0px));text-align:center;font-family:var(--nast);font-size:clamp(1.6rem,6vw,2.4rem);color:#fff;-webkit-text-fill-color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.7);transition:opacity .6s}
+#movie .mv-bar{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));left:12px;right:12px;height:3px;background:rgba(255,255,255,.25);border-radius:9px;overflow:hidden}
+#movie .mv-bar i{display:block;height:100%;width:0;background:#F6D9A8}
+#movie .mv-x,#movie .mv-p{position:absolute;top:calc(22px + env(safe-area-inset-top,0px));width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;-webkit-text-fill-color:#fff;font-size:1.1rem;border:1px solid rgba(255,255,255,.3)}
+#movie .mv-x{left:12px}#movie .mv-p{left:62px}
+#movie .mv-end{position:absolute;inset:0;display:none;place-items:center;text-align:center;background:radial-gradient(circle at 50% 50%,#5a2447,#0f0818);padding:24px}
+#movie .mv-end.on{display:grid}
+#movie .mv-end h3{font-family:var(--nast);font-size:clamp(2.6rem,12vw,4rem);color:#F6D9A8;-webkit-text-fill-color:#F6D9A8;margin:0}
+#movie .mv-end p{color:#F0C5D2;-webkit-text-fill-color:#F0C5D2}
+.mv-start{display:block;margin:0 auto;padding:14px 34px;border-radius:99px;background:linear-gradient(135deg,#C2607F,#783B55);color:#fff;-webkit-text-fill-color:#fff;font-size:1.1rem;box-shadow:0 12px 30px rgba(120,59,85,.5)}
+
+/* چت */
+#chatBtn{position:fixed;right:16px;bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:250;width:52px;height:52px;border-radius:50%;border:0;display:none;place-items:center;font-size:1.5rem;background:linear-gradient(135deg,#6b8cff,#3b4fb8);box-shadow:0 10px 26px rgba(59,79,184,.45);color:#fff;-webkit-text-fill-color:initial}
+#chatBtn.show{display:grid}
+#chatBtn .nf-dot{position:absolute;top:-3px;left:-3px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:#ef5b7c;color:#fff;-webkit-text-fill-color:#fff;font:700 .72rem/20px Vazirmatn,sans-serif;border:2px solid #fff;display:none}
+#chatBtn .nf-dot.on{display:block}
+#chatPanel{position:fixed;left:0;right:0;top:0;height:100dvh;z-index:655;display:none;flex-direction:column;background:linear-gradient(180deg,#fff7f2,#ffeef3);color:#51243B;-webkit-text-fill-color:#51243B;direction:rtl}
+#chatPanel.open{display:flex}
+.ch-head{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;background:linear-gradient(135deg,#783B55,#4a2036);color:#FFF4EC;-webkit-text-fill-color:#FFF4EC}
+.ch-head b{font-size:1.1rem}
+.ch-head small{display:block;font-size:.8rem;color:#F0C5D2;-webkit-text-fill-color:#F0C5D2}
+.ch-head .ch-x{margin-inline-start:auto;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;-webkit-text-fill-color:#fff;font-size:1.1rem}
+.ch-dot{width:10px;height:10px;border-radius:50%;background:#9a8a96}
+.ch-dot.on{background:#5be28b;box-shadow:0 0 8px #5be28b}
+.ch-list{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:12px 12px 6px;display:flex;flex-direction:column;gap:6px;-webkit-overflow-scrolling:touch}
+.ch-day{align-self:center;font-size:.78rem;color:#9A6B7F;-webkit-text-fill-color:#9A6B7F;background:rgba(255,255,255,.7);padding:2px 12px;border-radius:99px;margin:6px 0}
+.ch-msg{max-width:80%;padding:8px 12px;border-radius:18px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere;font-size:1rem}
+.ch-msg small{display:block;font-size:.68rem;opacity:.7;margin-top:2px}
+.ch-msg.me{align-self:flex-start;background:linear-gradient(135deg,#C2607F,#783B55);color:#fff;-webkit-text-fill-color:#fff;border-bottom-right-radius:6px}
+.ch-msg.me small{-webkit-text-fill-color:#F6D9A8}
+.ch-msg.you{align-self:flex-end;background:#fff;border:1px solid #F0C5D2;border-bottom-left-radius:6px}
+.ch-msg.big{font-size:2.2rem;background:none!important;border:0!important;padding:0 6px}
+.ch-typing{min-height:20px;padding:0 16px;font-size:.82rem;color:#9A6B7F;-webkit-text-fill-color:#9A6B7F}
+.ch-stk{display:flex;gap:6px;overflow-x:auto;padding:4px 10px;scrollbar-width:none}
+.ch-stk button{flex:0 0 auto;font-size:1.5rem;padding:2px 8px;border-radius:12px;background:#fff;border:1px solid #F0C5D2;-webkit-text-fill-color:initial}
+.ch-in{display:flex;gap:8px;align-items:flex-end;padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.9);border-top:1px solid #F0C5D2}
+.ch-in textarea{flex:1;resize:none;max-height:120px;min-height:44px;border-radius:22px;border:1px solid #E3BFCC;padding:10px 14px;font-family:inherit;background:#fff;color:#51243B;-webkit-text-fill-color:#51243B;direction:rtl}
+.ch-in button{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#C2607F,#783B55);color:#fff;-webkit-text-fill-color:#fff;font-size:1.2rem;flex:0 0 auto}
+.ch-lock{margin:auto;text-align:center;padding:20px;line-height:2}
+.ch-lock button{margin-top:10px;padding:11px 26px;border-radius:99px;background:linear-gradient(135deg,#C2607F,#783B55);color:#fff;-webkit-text-fill-color:#fff}

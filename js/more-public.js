@@ -37,7 +37,7 @@
   const other = (w) => (w === "ماجی" ? "محمد" : "ماجی");
   const ls = { get: (k) => { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, del: (k) => { try { localStorage.removeItem(k); } catch (e) {} } };
   const getWho = () => ls.get("who");
-  let codeCache = ls.get("acode");
+  ls.del("acode"); let codeCache = ""; // رمز هرگز ذخیره نمی‌شود؛ با هر ورود به سایت دوباره پرسیده می‌شود
   const openers = []; const reopenAll = (force) => openers.forEach((f) => f(force));
   const rpc = (name, body) => fetch(`${base}/rest/v1/rpc/${name}`, { method: "POST", headers: apiHeaders({ "Content-Type": "application/json" }), body: JSON.stringify(body || {}) }).then((r) => { if (!r.ok) throw Error(name); return r.json(); });
   const ago = (iso) => { const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000)); if (m < 1) return "همین الان"; if (m < 60) return fa(m) + " دقیقه پیش"; const h = Math.round(m / 60); if (h < 24) return fa(h) + " ساعت پیش"; return fa(Math.round(h / 24)) + " روز پیش"; };
@@ -54,7 +54,6 @@
       const row = el("div", "p2-row"); const chips = NAMES.map((n) => { const c = el("button", "p2-chip" + (who === n ? " on" : ""), n); c.type = "button"; c.onclick = () => { who = n; chips.forEach((x) => x.classList.toggle("on", x.textContent === n)); }; row.append(c); return c; });
       const input = el("input", "p2-input"); input.type = "password"; input.placeholder = "رمز مشترک"; input.autocomplete = "current-password";
       const msg = el("div", "code-msg"); const ok = el("button", "p2-btn", "تأیید"); ok.type = "button"; const no = el("button", "p2-btn secondary", "بعداً"); no.type = "button";
-      const rem = el("label", "code-rem"); const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = true; rem.append(cb, document.createTextNode(" در این دستگاه به خاطر بسپار"));
       const close = (v) => { ov.remove(); resolve(v); };
       const go = async () => {
         if (!who) { msg.textContent = "اول انتخاب کن کدام‌یکی هستی."; return; }
@@ -63,14 +62,14 @@
         ok.disabled = true; msg.textContent = "در حال بررسی…";
         try {
           const good = (await rpc("verify_access_code", { p_access_code: input.value })) === true;
-          if (good) { codeCache = input.value; ls.set("who", who); if (cb.checked) ls.set("acode", codeCache); lock.classList.add("open"); setTimeout(() => { close({ code: codeCache, who }); reopenAll(); }, 450); }
+          if (good) { codeCache = input.value; ls.set("who", who); window.dispatchEvent(new Event("p2-auth")); lock.classList.add("open"); setTimeout(() => { close({ code: codeCache, who }); reopenAll(); }, 450); }
           else { msg.textContent = "رمز درست نیست."; lock.classList.add("shake"); setTimeout(() => lock.classList.remove("shake"), 600); ok.disabled = false; }
         } catch (e) { msg.textContent = "بررسی ممکن نشد."; ok.disabled = false; }
       };
       ok.onclick = go; no.onclick = () => close(null);
       input.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); if (e.key === "Escape") close(null); });
       box.append(lock, el("p", "code-t", "این بخش مخصوص ما دو نفر است"), el("small", "p2-muted", "تو کی هستی؟"), row);
-      if (!codeCache) box.append(input, rem);
+      if (!codeCache) box.append(input);
       const act = el("div", "p2-row"); act.append(ok, no); box.append(msg, act); ov.append(box); document.body.appendChild(ov);
       (codeCache ? ok : input).focus();
     });
@@ -449,7 +448,7 @@
 
   /* --- quiz scores (used by the quiz) --- */
   window.P2x = {
-    askWho, askAccess,
+    askWho, askAccess, getCode: () => codeCache,
     async submitScore(score, total, btn) {
       const a = await askAccess(); if (!a) return; btn.disabled = true;
       try { const ok = await rpc("submit_quiz_score", { p_access_code: a.code, p_who: a.who, p_correct: score, p_total: total }); btn.textContent = ok ? "✓ امتیاز ثبت شد" : "ثبت نشد"; const box = btn.parentElement && btn.parentElement.querySelector(".quiz-board"); if (box) this.showScores(box); } catch (e) { btn.textContent = "ثبت نشد"; btn.disabled = false; }

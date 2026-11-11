@@ -180,7 +180,7 @@ select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #e0cfda;bor
 <div class="sec-head"><div><h2>مدیریت عکس‌ها</h2><p class="hint">ترتیب نمایش در صفحه اصلی همان ترتیب فهرست پایین است. عکس‌های بزرگ خودکار بهینه می‌شوند.</p></div></div>
 <div class="datebox" id="starterBox" style="display:none;margin-bottom:14px">
 <h3>📦 انتقال عکس‌های اولیه</h3>
-<p class="hint">سه عکس اولیه (پوشه starter-photos) یک‌بار به Supabase منتقل می‌شوند تا قابل ویرایش و حذف باشند.</p>
+<p class="hint">سه عکس اولیه (پوشه assets/starter-photos) یک‌بار به Supabase منتقل می‌شوند تا قابل ویرایش و حذف باشند.</p>
 <button id="starterBtn" type="button" style="margin-top:8px">انتقال عکس‌های اولیه</button>
 </div>
 <div class="upload-box">
@@ -300,8 +300,8 @@ select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #e0cfda;bor
 <div id="message" role="status" aria-live="polite">در حال بررسی تنظیمات…</div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
-<script src="jdate.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/jdate.js"></script>
 <script>
 (() => {
  const cfg=window.SUPABASE_CONFIG||{};
@@ -443,9 +443,9 @@ select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #e0cfda;bor
   }catch(e){console.warn("Image optimize skipped:",e);return original;}
  }
  const starters=[
-  {path:"starter-1.jpg",file:"starter-photos/starter-1.jpg",title:"اولین عکسمون 🤍"},
-  {path:"starter-2.jpg",file:"starter-photos/starter-2.jpg",title:"یک خاطره شیرین 🤍"},
-  {path:"starter-3.jpg",file:"starter-photos/starter-3.jpg",title:"عکس مورد علاقمون 🤍"}
+  {path:"starter-1.jpg",file:"assets/starter-photos/starter-1.jpg",title:"اولین عکسمون 🤍"},
+  {path:"starter-2.jpg",file:"assets/starter-photos/starter-2.jpg",title:"یک خاطره شیرین 🤍"},
+  {path:"starter-3.jpg",file:"assets/starter-photos/starter-3.jpg",title:"عکس مورد علاقمون 🤍"}
  ];
  const STARTER_FLAG="me-and-you-starter-done";
  function updateStarterBox(){
@@ -462,7 +462,7 @@ select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #e0cfda;bor
    const base=photos.length?Math.min(...photos.map(p=>new Date(p.created_at).getTime())):Date.now();
    for(const [idx,s] of missing.entries()){
     const res=await fetch(s.file,{cache:"no-store"});
-    if(!res.ok)throw new Error(`فایل ${s.file} پیدا نشد؛ مطمئن شو پوشه starter-photos همراه سایت آپلود شده است.`);
+    if(!res.ok)throw new Error(`فایل ${s.file} پیدا نشد؛ مطمئن شو پوشه assets/starter-photos همراه سایت آپلود شده است.`);
     const blob=await res.blob();
     const up=await sb.storage.from("gallery").upload(s.path,blob,{upsert:false,contentType:"image/jpeg"});
     if(up.error&&!/already exists|duplicate/i.test(up.error.message))throw up.error;
@@ -620,6 +620,6 @@ try{sessionStorage.setItem("adm_sec",id)}catch(e){}window.scrollTo({top:0})};
 nav.addEventListener("click",e=>{const b=e.target.closest("button");if(b)show(b.dataset.sec)});
 let s="texts";try{s=sessionStorage.getItem("adm_sec")||"texts"}catch(e){}show(s);})();
 </script>
-<script src="phase2-admin.js"></script>
+<script src="js/phase2-admin.js"></script>
 </body>
 </html>
