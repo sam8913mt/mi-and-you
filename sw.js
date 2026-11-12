@@ -1,14 +1,14 @@
 /* Service worker: دریافت اعلان‌ها (Web Push) */
-const CACHE = "me-and-you-v4";
-const SHELL = ["./", "index.html", "chat.html", "together.html", "manifest.webmanifest", "css/romantic.css", "css/magic.css", "css/magic2.css", "css/magic3.css", "css/chat.css", "css/together.css", "js/jdate.js", "js/supabase-config.js", "js/site.js", "js/session.js", "js/restore.js", "js/auth-lite.js", "js/live-core.js", "js/phase2-public.js", "js/more-public.js", "js/romantic.js", "js/emoji-fix.js", "js/notify.js", "js/magic.js", "js/magic2.js", "js/magic3.js", "js/chat.js", "js/together.js", "assets/icons/icon-192.png"];
+const CACHE = "me-and-you-v9";
+const SHELL = ["./", "index.html", "chat.html", "together.html", "watch.html", "manifest.webmanifest", "css/romantic.css", "css/magic.css", "css/magic2.css", "css/magic3.css", "css/chat.css", "css/together.css", "css/watch.css", "js/jdate.js", "js/supabase-config.js", "js/site.js", "js/session.js", "js/bio.js", "js/restore.js", "js/auth-lite.js", "js/live-core.js", "js/phase2-public.js", "js/more-public.js", "js/romantic.js", "js/emoji-fix.js", "js/notify.js", "js/magic.js", "js/magic2.js", "js/magic3.js", "js/chat.js", "js/together.js", "js/watch.js", "assets/icons/icon-192.png"];
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => Promise.all(SHELL.map((u) => c.add(u).catch(() => null)))).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => Promise.all(SHELL.map((u) => c.add(new Request(u, { cache: "reload" })).catch(() => null)))).then(() => self.skipWaiting()));
 });
 /* همیشه اول شبکه (نسخهٔ تازه)، در صورت نبود اینترنت از حافظه */
 self.addEventListener("fetch", (e) => {
   const r = e.request, u = new URL(r.url);
   if (r.method !== "GET" || u.origin !== self.location.origin || /music\.mp3$/.test(u.pathname)) return;
-  e.respondWith(fetch(r).then((res) => { if (res && res.ok) { const cp = res.clone(); caches.open(CACHE).then((c) => c.put(r, cp)); } return res; })
+  e.respondWith(fetch(r, { cache: "no-cache" }).then((res) => { if (res && res.ok) { const cp = res.clone(); caches.open(CACHE).then((c) => c.put(r, cp)); } return res; })
     .catch(() => caches.match(r).then((m) => m || (r.mode === "navigate" ? caches.match("index.html") : Response.error()))));
 });
 self.addEventListener("activate", (e) => e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())));

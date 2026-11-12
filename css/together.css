@@ -49,3 +49,12 @@ main{width:min(640px,100%);margin:0 auto;padding:14px 14px calc(40px + env(safe-
 .tg-gate a{display:inline-block;margin-top:12px;padding:11px 26px;border-radius:99px;background:linear-gradient(135deg,#C2607F,#783B55);color:#fff;text-decoration:none}
 [hidden]{display:none!important}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+
+.al-chk{display:flex;gap:8px;align-items:center;justify-content:center;margin:2px 0 10px;font-size:.88rem;color:#9A6B7F}
+.al-bio{background:linear-gradient(135deg,#3aa876,#1f6f4d)!important;margin-bottom:8px;color:#fff;border:0;border-radius:99px;min-height:48px;width:100%;font:inherit;cursor:pointer}
+.al-ov{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:rgba(20,8,24,.7);backdrop-filter:blur(6px)}
+.al-box{width:min(360px,100%);padding:26px 22px;border-radius:26px;background:linear-gradient(160deg,#fff,#FFF1F5);text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.5);border:2px solid #F0C5D2;color:#51243B}
+.al-ico{font-size:2.6rem}.al-box h3{margin:6px 0;color:#783B55;font-size:1.4rem}.al-box p{margin:0 0 12px;color:#9A6B7F;font-size:.9rem}
+.al-box input[type=password]{width:100%;min-height:48px;border-radius:16px;border:1px solid #E3BFCC;padding:8px 14px;font:inherit;font-size:16px;text-align:center;margin-bottom:10px}
+.al-go{width:100%;min-height:48px;border-radius:99px;background:linear-gradient(135deg,#C2607F,#783B55);color:#fff;font-size:1.05rem;border:0}
+.al-msg{min-height:1.4em;color:#c0233f;font-size:.88rem;margin-top:8px}.al-back{display:inline-block;margin-top:6px;color:#9A6B7F;font-size:.85rem;text-decoration:none}

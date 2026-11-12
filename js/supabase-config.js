@@ -10,3 +10,6 @@ window.SUPABASE_CONFIG = {
 window.PUSH_CONFIG = {
   vapidPublicKey: "BLmrDJ2ZZAP9QcajpkJlBY-IqHXMNgFFjzVBdV-9-aWvhhaPTT4M_kgm8gdbLmgyr511cSYh29pmDeEdvhoKjrY"
 };
+
+/* تماس صوتی در «فیلم دونفره»: به‌صورت پیش‌فرض فقط STUN رایگان؛ اگر روی بعضی شبکه‌ها وصل نشد، یک سرور TURN اضافه کن:
+   window.RTC_CONFIG = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "turn:YOUR_TURN_HOST:3478", username: "USER", credential: "PASS" }] }; */

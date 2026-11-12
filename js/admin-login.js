@@ -27,18 +27,33 @@
   async function enter() { location.replace("admin.html"); }
   (async () => { try { const { data: { session } } = await sb.auth.getSession(); if (session && await isAdmin(session)) enter(); } catch (e) {} })();
 
-  async function login() {
-    const email = $("email").value.trim(), password = $("password").value;
-    if (!email || !password) { say("ایمیل و رمز را وارد کن.", true); return; }
+  const canBio = !!(window.Bio && Bio.supported());
+  const refreshBio = () => { const has = canBio && Bio.has("admin"); $("bioGo").hidden = !has; $("bioOff").hidden = !has; $("bioChkWrap").hidden = !(canBio && !has); };
+  refreshBio();
+  async function doLogin(email, password, fromBio) {
+    const pend = !fromBio && canBio && $("bioChk").checked && !Bio.has("admin") ? Bio.ensure().catch(() => null) : null; // باید داخل کلیک شروع شود
     go.disabled = true; go.classList.add("load"); say("");
     try {
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
-      if (error) { say("ورود ناموفق بود: ایمیل یا رمز درست نیست.", true); return; }
+      if (error) { if (fromBio) Bio.remove("admin"), refreshBio(); say("ورود ناموفق بود: ایمیل یا رمز درست نیست.", true); return; }
       if (!(await isAdmin(data.session))) { await sb.auth.signOut({ scope: "local" }); say("این حساب اجازه مدیریت ندارد.", true); return; }
+      if (pend && (await pend)) { try { await Bio.save("admin", JSON.stringify({ email, password })); } catch (e) {} }
       $("password").value = ""; say("خوش آمدی 💗"); enter();
     } catch (e) { say("خطا در اتصال؛ دوباره تلاش کن.", true); }
     finally { go.disabled = false; go.classList.remove("load"); }
   }
+  async function login() {
+    const email = $("email").value.trim(), password = $("password").value;
+    if (!email || !password) { say("ایمیل و رمز را وارد کن.", true); return; }
+    await doLogin(email, password, false);
+  }
+  async function bioLogin() {
+    try { const d = JSON.parse(await Bio.unlock("admin")); await doLogin(d.email, d.password, true); }
+    catch (e) { say("اثر انگشت تأیید نشد؛ ایمیل و رمز را بنویس.", true); }
+  }
+  $("bioGo").onclick = bioLogin;
+  $("bioOff").onclick = () => { Bio.remove("admin"); refreshBio(); say("اثر انگشت حذف شد."); };
+  if (canBio && Bio.has("admin")) setTimeout(async () => { try { const { data: { session } } = await sb.auth.getSession(); if (!session) bioLogin(); } catch (e) {} }, 500);
   go.onclick = login;
   ["email", "password"].forEach((id) => $(id).addEventListener("keydown", (e) => { if (e.key === "Enter") login(); }));
   addEventListener("pageshow", () => { $("password").value = ""; });

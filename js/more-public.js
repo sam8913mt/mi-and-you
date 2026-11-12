@@ -56,23 +56,43 @@
       const input = el("input", "p2-input"); input.type = "password"; input.placeholder = "رمز مشترک"; input.autocomplete = "current-password";
       const msg = el("div", "code-msg"); const ok = el("button", "p2-btn", "تأیید"); ok.type = "button"; const no = el("button", "p2-btn secondary", "بعداً"); no.type = "button";
       const close = (v) => { ov.remove(); resolve(v); };
+      const canBio = !!(window.Bio && Bio.supported()), hasBio = canBio && Bio.has("acode");
+      let enroll = null;
+      const accept = (c) => { codeCache = c; ss.set("acode", c); window.dispatchEvent(new Event("p2-auth")); lock.classList.add("open"); setTimeout(() => { close({ code: codeCache, who }); reopenAll(); }, 450); };
       const go = async () => {
         if (!who) { msg.textContent = "اول از صفحهٔ اصلی نقشت را انتخاب کن."; return; }
         if (codeCache) { return close({ code: codeCache, who }); }
         if (!input.value) { msg.textContent = "رمز را بنویس."; return; }
+        const pend = enroll && enroll.checked && !Bio.has("acode") ? Bio.ensure().catch(() => null) : null; // باید داخل همین کلیک شروع شود
         ok.disabled = true; msg.textContent = "در حال بررسی…";
         try {
           const good = (await rpc("verify_access_code", { p_access_code: input.value })) === true;
-          if (good) { codeCache = input.value; ss.set("acode", codeCache); window.dispatchEvent(new Event("p2-auth")); lock.classList.add("open"); setTimeout(() => { close({ code: codeCache, who }); reopenAll(); }, 450); }
+          if (good) { if (pend && (await pend)) { try { await Bio.save("acode", input.value); } catch (e) {} } accept(input.value); }
           else { msg.textContent = "رمز درست نیست."; lock.classList.add("shake"); setTimeout(() => lock.classList.remove("shake"), 600); ok.disabled = false; }
         } catch (e) { msg.textContent = "بررسی ممکن نشد."; ok.disabled = false; }
+      };
+      const viaBio = async () => {
+        msg.textContent = "";
+        try {
+          const c = await Bio.unlock("acode"); msg.textContent = "در حال بررسی…";
+          if ((await rpc("verify_access_code", { p_access_code: c })) === true) accept(c);
+          else { Bio.remove("acode"); msg.textContent = "رمز ذخیره‌شده دیگر معتبر نیست؛ دوباره وارد کن."; }
+        } catch (e) { msg.textContent = "اثر انگشت تأیید نشد؛ رمز را بنویس."; }
       };
       ok.onclick = go; no.onclick = () => close(null);
       input.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); if (e.key === "Escape") close(null); });
       box.append(lock, el("p", "code-t", "این بخش مخصوص ما دو نفر است"), el("small", "p2-muted", who ? "ورود به‌عنوان " + who : ""));
       if (!codeCache) box.append(input);
+      if (hasBio) {
+        const bb = el("button", "p2-btn", "🔓 ورود با اثر انگشت"); bb.type = "button"; bb.onclick = viaBio; box.append(bb);
+        const rm = el("button", "p2-chip ghost", "حذف اثر انگشت از این دستگاه"); rm.type = "button"; rm.onclick = () => { Bio.remove("acode"); bb.remove(); rm.remove(); msg.textContent = "اثر انگشت حذف شد."; }; box.append(rm);
+        setTimeout(viaBio, 300);
+      } else if (canBio && !codeCache) {
+        const lab = el("label", "code-rem"); enroll = document.createElement("input"); enroll.type = "checkbox"; enroll.checked = true;
+        lab.append(enroll, document.createTextNode(" ورودهای بعدی با اثر انگشت")); box.append(lab);
+      }
       const act = el("div", "p2-row"); act.append(ok, no); box.append(msg, act); ov.append(box); document.body.appendChild(ov);
-      (codeCache ? ok : input).focus();
+      if (!hasBio) (codeCache ? ok : input).focus();
     });
   }
   function askWho() { return Promise.resolve(getWho()); }

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#150c1f">
+<meta name="robots" content="noindex,nofollow">
+<title>فیلم دونفره · ME &amp; YOU</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Vazirmatn:wght@300;400;600;800&display=swap">
+<link rel="stylesheet" href="css/watch.css?v=15">
+</head>
+<body>
+<header class="w-head">
+  <a class="w-back" href="index.html" aria-label="بازگشت">➜</a>
+  <div class="w-ttl"><h1>🎬 فیلم دونفره</h1><small id="wStatus">آفلاین</small></div>
+  <a class="w-back" href="chat.html" aria-label="چت">💬</a>
+</header>
+<main>
+  <section class="w-card" id="wLoad">
+    <div class="w-row">
+      <input id="wUrl" type="url" inputmode="url" dir="ltr" placeholder="لینک فیلم: آپارات (aparat.com/v/…) یا لینک مستقیم mp4 / m3u8" autocomplete="off">
+      <button id="wGo" class="w-btn go" type="button">بارگذاری برای هر دو</button>
+    </div>
+    <p class="w-hint" id="wHint">لینک مستقیم (mp4/webm/m3u8): پخش، مکث و جلو/عقب کردن کاملاً هم‌زمان می‌شود. آپارات: فیلم برای هر دو باز می‌شود و با «شمارش معکوس» هم‌زمان شروع می‌کنید.</p>
+  </section>
+
+  <section class="w-stage" id="wStage" hidden>
+    <div class="w-player" id="wPlayer"></div>
+    <div class="w-tools" id="wToolsAparat" hidden>
+      <button class="w-btn" id="wCount" type="button">⏱ شمارش معکوس شروع هم‌زمان</button>
+      <button class="w-btn" id="wPauseCall" type="button">⏸ بگو مکث کنیم</button>
+      <span class="w-time"><input id="wTime" inputmode="numeric" dir="ltr" placeholder="12:34"><button class="w-btn" id="wTimeSend" type="button">برو به این زمان</button></span>
+    </div>
+    <div class="w-tools" id="wToolsDirect" hidden>
+      <button class="w-btn" id="wSyncNow" type="button">🔄 هماهنگ‌سازی دوباره</button>
+      <button class="w-btn" id="wFull" type="button">⛶ تمام‌صفحه</button>
+    </div>
+  </section>
+
+  <section class="w-card" id="wCall">
+    <div class="w-row">
+      <button id="wMic" class="w-btn go" type="button">🎙️ شروع صحبت با میکروفون</button>
+      <button id="wMute" class="w-btn" type="button" hidden>🔇 بی‌صدا</button>
+      <button id="wHang" class="w-btn danger" type="button" hidden>✕ قطع</button>
+    </div>
+    <p class="w-hint" id="wCallSt">برای صحبت هم‌زمان با فیلم، هر دو در همین صفحه باشید.</p>
+    <audio id="wRemote" autoplay playsinline></audio>
+  </section>
+
+  <section class="w-card w-chat">
+    <div class="w-react" id="wReact"></div>
+    <div class="w-msgs" id="wMsgs" aria-live="polite"></div>
+    <div class="w-row">
+      <input id="wText" type="text" maxlength="300" placeholder="یک پیام کوتاه بنویس…" enterkeyhint="send">
+      <button id="wSend" class="w-btn go" type="button">➤</button>
+    </div>
+  </section>
+</main>
+<div class="w-count" id="wCountOv" hidden></div>
+<div class="w-toast" id="wToast" hidden></div>
+<div class="w-gate" id="wGate" hidden></div>
+<script src="js/supabase-config.js?v=15"></script>
+<script src="js/session.js?v=15"></script>
+<script src="js/live-core.js?v=15"></script>
+<script src="js/watch.js?v=15"></script>
+</body>
+</html>

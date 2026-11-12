@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#1a0d24">
 <title>ورود مدیر · ME &amp; YOU</title>
-<link rel="stylesheet" href="css/admin-login.css">
+<link rel="stylesheet" href="css/admin-login.css?v=15">
 </head>
 <body>
 <canvas id="stars" aria-hidden="true"></canvas>
@@ -16,13 +16,17 @@
   <p class="sub">فقط برای مدیر؛ خاطره‌ها اینجا ساخته می‌شوند</p>
   <div class="field"><span class="ic">✉️</span><input id="email" type="email" autocomplete="username" inputmode="email" placeholder="ایمیل مدیر" dir="ltr"></div>
   <div class="field"><span class="ic">🔑</span><input id="password" type="password" autocomplete="current-password" placeholder="رمز عبور" dir="ltr"><button class="eye" id="eye" type="button" aria-label="نمایش رمز">👁</button></div>
+  <label class="bio-chk" id="bioChkWrap" hidden><input type="checkbox" id="bioChk" checked> ورودهای بعدی با اثر انگشت</label>
   <button class="go" id="go" type="button"><span class="t">ورود 💗</span><span class="spin"></span></button>
+  <button class="go bio" id="bioGo" type="button" hidden>🔓 ورود با اثر انگشت</button>
+  <button class="bio-off" id="bioOff" type="button" hidden>حذف اثر انگشت از این دستگاه</button>
   <p class="msg" id="msg" role="status"></p>
   <a class="back" href="index.html">← بازگشت به سایت</a>
-  <div class="lock-note">🔒 رمز در هیچ جا ذخیره نمی‌شود و با بستن صفحه فراموش می‌شود</div>
+  <div class="lock-note">🔒 بدون فعال‌کردن اثر انگشت، هیچ‌چیز روی دستگاه ذخیره نمی‌شود</div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase-config.js"></script>
-<script src="js/admin-login.js"></script>
+<script src="js/supabase-config.js?v=15"></script>
+<script src="js/bio.js?v=15"></script>
+<script src="js/admin-login.js?v=15"></script>
 </body>
 </html>

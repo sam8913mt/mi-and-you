@@ -126,3 +126,62 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offse
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 [hidden]{display:none!important}
+
+/* سنجاق، ستاره، پیام محوشونده، پس‌زمینه */
+.ch-pinned{display:flex;gap:8px;align-items:center;width:100%;padding:8px 14px;background:rgba(255,255,255,.92);border-bottom:1px solid #F0C5D2;text-align:right;font-size:.88rem;color:var(--ink)}
+.ch-pinned span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch-pinned small{color:var(--mut)}
+.ch-star{font-size:.8rem}
+.ch-ttl{font-size:.7rem;opacity:.85}
+.ch-flt{align-self:center;font-size:.8rem;color:var(--plum);background:#FFE3EC;padding:3px 14px;border-radius:99px;margin-bottom:6px}
+.ch-sheet .tt{font-weight:700;color:var(--plum);padding:4px 10px 10px}
+.ch-sheet .opt{display:flex;justify-content:space-between;align-items:center;width:100%;padding:12px 10px;border-radius:12px;text-align:right}
+.ch-sheet .opt.on{background:#FFE3EC;color:var(--plum);font-weight:700}
+.ch-bgs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:4px 6px 8px}
+.ch-bgs button{aspect-ratio:1;border-radius:16px;border:3px solid #fff;box-shadow:0 0 0 1.5px #E3BFCC;font-size:1.1rem}
+.ch-bgs button.on{box-shadow:0 0 0 3px var(--rose)}
+#chatApp[data-bg="rose"]{background:linear-gradient(180deg,#ffe3ec,#ffc9d9)}
+#chatApp[data-bg="night"]{background:linear-gradient(180deg,#1b1233,#2d1740)}
+#chatApp[data-bg="mint"]{background:linear-gradient(180deg,#e6fff3,#c9f3df)}
+#chatApp[data-bg="sky"]{background:linear-gradient(180deg,#e8f2ff,#cfe0ff)}
+#chatApp[data-bg="sun"]{background:linear-gradient(180deg,#fff2d6,#ffd9c2)}
+#chatApp[data-bg="hearts"]{background:#fff0f5 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Ctext x='10' y='34' font-size='22' opacity='.16'%3E💗%3C/text%3E%3Ctext x='46' y='70' font-size='18' opacity='.12'%3E💞%3C/text%3E%3C/svg%3E")}
+#chatApp[data-bg="plain"]{background:#fff}
+#chatApp[data-bg="night"] .ch-day{background:rgba(255,255,255,.14);color:#F0C5D2}
+#chatApp[data-bg="night"] .you .ch-msg{background:#3a2550;border-color:#5b3a78;color:#FFF4EC}
+#chatApp[data-bg="night"] .you .ch-meta{color:#C9B0BF}
+#chatApp[data-bg="night"] .ch-typing{color:#C9B0BF}
+
+/* ضبط با نگه‌داشتن دکمه */
+#chSend{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.ch-rec.hold .ch-rec-x,.ch-rec.hold .ch-send,.ch-rec.hold .ch-rec-wave{display:none}
+.ch-rec-hint{flex:1;font-size:.82rem;color:var(--mut)}
+.ch-rec:not(.hold) .ch-rec-hint{display:none}
+.ch-rec.cancel{background:#ffe3e8}.ch-rec.cancel .ch-rec-hint{color:#c0233f;font-weight:700}
+.ch-vlive{position:absolute;left:0;right:0;bottom:calc(86px + env(safe-area-inset-bottom,0px));z-index:8;display:grid;place-items:center;pointer-events:none}
+.ch-vcirc{position:relative;width:min(62vw,240px);height:min(62vw,240px);border-radius:50%;overflow:hidden;border:4px solid #fff;box-shadow:0 0 0 4px var(--rose),0 18px 50px rgba(61,27,52,.55);background:#000}
+.ch-vlive.cancel .ch-vcirc{box-shadow:0 0 0 4px #e0364f,0 18px 50px rgba(224,54,79,.5);filter:grayscale(.6)}
+.ch-vcirc video{width:100%;height:100%;object-fit:cover}
+.ch-vcirc video.mirror{transform:scaleX(-1)}
+.ch-vcirc b{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);padding:2px 12px;border-radius:99px;background:rgba(224,54,79,.9);color:#fff;font-size:.85rem;font-variant-numeric:tabular-nums}
+
+/* امکانات بیشتر چت */
+.ch-dots2{margin-inline-start:2px;min-width:30px;height:24px;border-radius:99px;background:rgba(0,0,0,.1);color:inherit;font-size:1rem;line-height:1;padding:0 8px}
+.me .ch-dots2{background:rgba(255,255,255,.22)}
+.ch-dots{display:none}
+.ch-selbar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:linear-gradient(135deg,#783B55,#3d1b34);color:#fff}
+.ch-selbar b{flex:1}.ch-selbar button{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.16);font-size:1.1rem;color:#fff}
+.ch-row.sel .ch-msg{outline:3px solid #F6D9A8;outline-offset:2px}
+.ch-unread{background:#FFE3EC;color:var(--plum);font-weight:700}
+.ch-code{background:rgba(0,0,0,.12);padding:0 6px;border-radius:6px;font-family:ui-monospace,Consolas,monospace;direction:ltr;display:inline-block}
+.ch-row{touch-action:pan-y}
+.ch-gal{position:fixed;inset:0;z-index:62;background:#fff7f2;display:flex;flex-direction:column;direction:rtl}
+.ch-gal-h{display:flex;align-items:center;justify-content:space-between;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 12px;background:linear-gradient(135deg,#783B55,#3d1b34);color:#fff}
+.ch-gal-h button{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff}
+.ch-gal-g{flex:1;overflow:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;align-content:start}
+.ch-gal-g p{grid-column:1/-1;text-align:center;color:var(--mut);padding:30px}
+.ch-gal-i{position:relative;aspect-ratio:1;overflow:hidden;background:#f4dbe3;padding:0}
+.ch-gal-i img,.ch-gal-i video{width:100%;height:100%;object-fit:cover}
+.ch-gal-i span{position:absolute;inset:auto 6px 6px auto;color:#fff;font-size:1.2rem;text-shadow:0 1px 6px #000}
+.ch-light video{max-width:96vw;max-height:88dvh;border-radius:8px}
+.ch-light{z-index:70}

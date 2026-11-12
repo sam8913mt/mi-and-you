@@ -151,9 +151,9 @@
   /* ================= پیوند به صفحه‌های جدا (چت و فضای مشترک) ================= */
   function buildNav() {
     const mk = (id, href, ico, label) => { const a = el("a"); a.id = id; a.href = href; a.setAttribute("aria-label", label); a.append(el("span", "", ico)); doc.body.append(a); return a; };
-    const chat = mk("chatBtn", "chat.html", "💬", "چت"), tg = mk("togetherBtn", "together.html", "🎮", "فضای مشترک");
+    const chat = mk("chatBtn", "chat.html", "💬", "چت"), tg = mk("togetherBtn", "together.html", "🎮", "فضای مشترک"), wt = mk("watchBtn", "watch.html", "🎬", "فیلم دونفره");
     const dot = el("span", "nf-dot"); chat.append(dot);
-    setInterval(() => { const ok = !$("#gate") && !!who(); chat.classList.toggle("show", ok); tg.classList.toggle("show", ok); }, 500);
+    setInterval(() => { const ok = !$("#gate") && !!who(); chat.classList.toggle("show", ok); tg.classList.toggle("show", ok); wt.classList.toggle("show", ok); }, 500);
     async function unread() {
       if (!code() || !who()) return;
       try { const seen = +ls.get("chat-seen") || 0; const rows = await rpc("get_chat", { p_access_code: code(), p_limit: 30 }); const n = rows.filter((r) => r.author !== who() && !r.deleted_at && new Date(r.created_at).getTime() > seen).length; dot.textContent = n > 9 ? "۹+" : fa(n); dot.classList.toggle("on", n > 0); } catch (e) {}

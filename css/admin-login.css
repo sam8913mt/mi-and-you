@@ -29,4 +29,8 @@ h1{margin:0;text-align:center;font-size:1.5rem;background:linear-gradient(90deg,
 .back{display:block;text-align:center;margin-top:16px;color:#e9cdd8;font-size:.9rem;text-decoration:none}
 .back:hover{color:#fff}
 .lock-note{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid rgba(246,217,168,.16);color:var(--mut);font-size:.8rem}
+.go.bio{margin-top:10px;background:linear-gradient(135deg,#3aa876,#1f6f4d);box-shadow:0 14px 34px rgba(58,168,118,.4)}
+.bio-chk{display:flex;gap:8px;align-items:center;justify-content:center;margin:0 0 12px;color:var(--mut);font-size:.9rem}
+.bio-off{display:block;margin:12px auto 0;background:none;border:0;color:var(--mut);font:inherit;font-size:.82rem;cursor:pointer;text-decoration:underline}
+[hidden]{display:none!important}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}

@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Vazirmatn:wght@300;400;600;800&display=swap">
-<link rel="stylesheet" href="css/chat.css">
+<link rel="stylesheet" href="css/chat.css?v=15">
 </head>
 <body>
 <div id="chatApp">
@@ -19,8 +19,12 @@
     <div class="ch-avatar" id="chAvatar">💗</div>
     <div class="ch-title"><b id="chName">چت ما</b><small id="chStatus"></small></div>
     <button class="ch-ic" id="chSearchBtn" type="button" aria-label="جست‌وجو">🔍</button>
+    <button class="ch-ic" id="chMenuBtn" type="button" aria-label="تنظیمات چت">⋮</button>
+    <a class="ch-ic" href="watch.html" aria-label="فیلم دونفره">🎬</a>
     <a class="ch-ic" href="together.html" aria-label="فضای مشترک">🎮</a>
   </header>
+  <div class="ch-selbar" id="chSelBar" hidden></div>
+  <button class="ch-pinned" id="chPinned" type="button" hidden></button>
   <div class="ch-search" id="chSearch" hidden><input id="chSearchInp" type="search" placeholder="جست‌وجو در پیام‌ها…"><span id="chSearchCount"></span></div>
   <div class="ch-list" id="chList" aria-live="polite"></div>
   <button class="ch-down" id="chDown" type="button" hidden>⬇<i id="chDownN"></i></button>
@@ -31,13 +35,15 @@
     <button class="ch-ic2" id="chAttach" type="button" aria-label="پیوست">📎</button>
     <button class="ch-ic2" id="chEmoji" type="button" aria-label="ایموجی">😊</button>
     <textarea id="chText" rows="1" maxlength="2000" placeholder="پیامت را بنویس…" enterkeyhint="send"></textarea>
+    <button class="ch-ic2" id="chFlip" type="button" aria-label="تعویض دوربین" hidden>🔄</button>
     <button class="ch-send" id="chSend" type="button" aria-label="ارسال">🎤</button>
   </footer>
   <div class="ch-rec" id="chRec" hidden>
     <button type="button" id="chRecCancel" class="ch-rec-x" aria-label="لغو">🗑</button>
-    <span class="ch-rec-dot"></span><b id="chRecT">۰:۰۰</b><span class="ch-rec-wave" id="chWave"></span>
+    <span class="ch-rec-dot"></span><b id="chRecT">۰:۰۰</b><span class="ch-rec-wave" id="chWave"></span><span class="ch-rec-hint" id="chRecHint"></span>
     <button type="button" id="chRecSend" class="ch-send" aria-label="ارسال ویس">➤</button>
   </div>
+  <div class="ch-vlive" id="chVlive" hidden><div class="ch-vcirc"><video id="chVprev" playsinline muted autoplay></video><b id="chVliveT">۰:۰۰</b></div></div>
   <div class="ch-menu" id="chMenu" hidden>
     <button type="button" data-k="image">🖼️ <span>عکس</span></button>
     <button type="button" data-k="vcam">🎥 <span>ضبط ویدئو</span></button>
@@ -51,10 +57,11 @@
 <div class="ch-sheet" id="chSheet" hidden></div>
 <div class="ch-light" id="chLight" hidden></div>
 <div class="ch-gate" id="chGate" hidden></div>
-<script src="js/supabase-config.js"></script>
-<script src="js/session.js"></script>
-<script src="js/auth-lite.js"></script>
-<script src="js/live-core.js"></script>
-<script src="js/chat.js"></script>
+<script src="js/supabase-config.js?v=15"></script>
+<script src="js/session.js?v=15"></script>
+<script src="js/bio.js?v=15"></script>
+<script src="js/auth-lite.js?v=15"></script>
+<script src="js/live-core.js?v=15"></script>
+<script src="js/chat.js?v=15"></script>
 </body>
 </html>
