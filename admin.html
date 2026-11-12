@@ -109,25 +109,18 @@ select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #e0cfda;bor
 @media(max-width:700px){.mt-row3{grid-template-columns:1fr 1.3fr 1fr}.mt-card{max-width:none}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
+<link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
 <main>
 <header>
-<h1>🔐 پنل مدیریت خاطره‌ها</h1>
+<div class="brand"><span class="brand-ico">💗</span><div><h1>پنل مدیریت خاطره‌ها</h1><small>ME &amp; YOU · مرکز فرمان</small></div></div>
 <div class="actions">
 <a class="button secondary" id="homeLink" href="index.html">صفحه اصلی</a>
 <a class="button secondary" id="previewLink" href="index.html" target="_blank" rel="noopener" style="display:none">👁 پیش‌نمایش</a>
 <button class="danger" id="exitBtn" type="button" style="display:none">🚪 خروج</button>
 </div>
 </header>
-
-<section class="panel" id="loginPanel">
-<h2>ورود مدیر</h2>
-<p class="hint">حساب مدیر باید از قبل در Supabase ساخته شده و در جدول admin_users ثبت شده باشد.</p>
-<label for="email">ایمیل مدیر</label><input id="email" type="email" autocomplete="username" placeholder="admin@example.com">
-<label for="password">رمز عبور</label><div class="password-wrap"><input id="password" type="password" autocomplete="current-password"><button id="togglePassword" class="secondary" type="button" aria-pressed="false">نمایش رمز</button></div>
-<div class="actions" style="margin-top:14px"><button id="loginBtn" style="width:100%">ورود</button></div>
-</section>
 
 <div id="app">
 <nav class="nav" id="mainNav" aria-label="بخش‌های پنل">
@@ -308,13 +301,6 @@ select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #e0cfda;bor
  const configured=cfg.url&&cfg.anonKey&&!cfg.url.includes("YOUR_PROJECT_ID")&&!cfg.anonKey.includes("YOUR_SUPABASE");
  const msg=document.getElementById("message");
  const say=(t)=>msg.textContent=t;
- const loginPanel=document.getElementById("loginPanel");
- const togglePassword=document.getElementById("togglePassword");
- if(togglePassword)togglePassword.addEventListener("click",()=>{
-  const field=document.getElementById("password"),show=field.type==="password";
-  field.type=show?"text":"password";togglePassword.textContent=show?"پنهان کردن رمز":"نمایش رمز";
-  togglePassword.setAttribute("aria-pressed",String(show));
- });
  const app=document.getElementById("app");
  let sb=null, currentSettings={}, photos=[];
  const fields=[
@@ -534,14 +520,6 @@ select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #e0cfda;bor
    card.append(num,img,title,row1,row2,file);wrap.appendChild(card);
   });
  }
- document.getElementById("loginBtn").onclick=async()=>{
-  if(!sb)return;say("در حال ورود…");
-  const email=document.getElementById("email").value.trim(),password=document.getElementById("password").value;
-  const {error}=await sb.auth.signInWithPassword({email,password});
-  if(error){say("ورود ناموفق بود: "+error.message);return;}
-  document.getElementById("password").value="";
-  try{await checkSession()}catch(e){say("خطا: "+e.message);}
- };
  document.getElementById("saveSettings").onclick=async()=>{
   const iso=updateDatePreview();
   if(!iso){say("ذخیره انجام نشد: تاریخ شروع شمارنده معتبر نیست.");return;}
@@ -572,28 +550,21 @@ select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #e0cfda;bor
  };
  const exitBtn=document.getElementById("exitBtn");
  function showLogin(text){
-  app.style.display="none";loginPanel.style.display="block";exitBtn.style.display="none";document.getElementById("previewLink").style.display="none";
-  document.getElementById("password").value="";
-  document.getElementById("email").value="";
-  document.getElementById("settingsFields").querySelectorAll("[data-key]").forEach(el=>el.value="");
-  document.getElementById("photoList").innerHTML="";
-  document.getElementById("photoFiles").value="";
-  jyEl.value="";jdEl.value="";datePreview.textContent="";
-  currentSettings={};photos=[];
-  if(text)say(text);
- }
- function showApp(){loginPanel.style.display="none";app.style.display="block";exitBtn.style.display="inline-block";document.getElementById("previewLink").style.display="inline-block";}
+   try{sessionStorage.setItem("adm_msg",text||"")}catch(e){}
+   location.replace("admin-login.html");
+  }
+  function showApp(){app.style.display="block";exitBtn.style.display="inline-block";document.getElementById("previewLink").style.display="inline-block";}
  let exiting=false;
  async function exitPanel(text){
   exiting=true;
   try{await sb.auth.signOut({scope:"local"});}catch(e){console.error(e);}
-  showLogin(text||"از پنل خارج شدی. برای ورود دوباره، ایمیل و رمز را وارد کن.");
+  showLogin(text||"از پنل خارج شدی.");
   exiting=false;
  }
  exitBtn.onclick=()=>exitPanel();
  document.getElementById("homeLink").addEventListener("click",async(e)=>{
   e.preventDefault();
-  if(sb)await exitPanel();
+  try{if(sb)await sb.auth.signOut({scope:"local"});}catch(e){}
   location.href="index.html";
  });
  function wireAuth(){
@@ -601,13 +572,11 @@ select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #e0cfda;bor
   sb.auth.onAuthStateChange((event)=>{if(event==="SIGNED_OUT"&&!exiting)showLogin("نشست تو تمام شد؛ دوباره وارد شو.");});
   // Back/forward cache can restore an old visible panel: re-verify the session.
   window.addEventListener("pageshow",(e)=>{if(e.persisted)checkSession().catch(()=>showLogin());});
-  // Enter key submits the login form.
-  ["email","password"].forEach(id=>document.getElementById(id).addEventListener("keydown",(e)=>{if(e.key==="Enter")document.getElementById("loginBtn").click();}));
   // Remove any older long-lived session saved in localStorage by the previous version.
   try{Object.keys(localStorage).filter(k=>/^sb-.*-auth-token/.test(k)).forEach(k=>localStorage.removeItem(k));}catch(e){}
  }
  makeFields();
- if(!configured||!window.supabase?.createClient){say("ابتدا فایل supabase-config.js را با آدرس پروژه و کلید عمومی پر کن. سپس مراحل README.txt را انجام بده.");loginPanel.style.display="none";}
+ if(!configured||!window.supabase?.createClient){say("ابتدا فایل js/supabase-config.js را با آدرس پروژه و کلید عمومی پر کن. سپس مراحل README.txt را انجام بده.");}
  else {sb=window.supabase.createClient(cfg.url,cfg.anonKey,{auth:{storage:window.sessionStorage,persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});wireAuth();checkSession().catch(e=>say("خطا در بارگذاری پنل: "+e.message));}
 })();
 </script>

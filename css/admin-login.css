@@ -1,0 +1,32 @@
+:root{--ink:#f8ecf1;--mut:#c9b0bf;--bd:rgba(246,217,168,.28)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;overflow-x:hidden}
+body{min-height:100dvh;display:grid;place-items:center;padding:24px 16px;font-family:Vazirmatn,Tahoma,"Segoe UI",Arial,sans-serif;color:var(--ink);background:radial-gradient(900px 560px at 85% -10%,rgba(229,138,168,.35),transparent 60%),radial-gradient(800px 560px at -10% 8%,rgba(120,100,200,.3),transparent 58%),radial-gradient(700px 500px at 50% 115%,rgba(214,183,122,.2),transparent 60%),linear-gradient(160deg,#150c1f,#24122f 55%,#3a1a3f);background-attachment:fixed}
+#stars{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+.card{position:relative;z-index:1;width:min(430px,100%);padding:34px 26px 26px;border-radius:30px;background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.05));border:1px solid var(--bd);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.18);animation:up .8s cubic-bezier(.2,1,.3,1) both}
+@keyframes up{from{opacity:0;transform:translateY(26px) scale(.96)}to{opacity:1;transform:none}}
+.card:before{content:"";position:absolute;inset:0 0 auto 0;height:3px;border-radius:30px 30px 0 0;background:linear-gradient(90deg,#ef5b7c,#f6d9a8,#9a7bff)}
+.logo{width:84px;height:84px;margin:-70px auto 14px;border-radius:26px;display:grid;place-items:center;font-size:2.6rem;background:linear-gradient(135deg,#ef5b7c,#8b2a55);box-shadow:0 16px 40px rgba(239,91,124,.55);animation:beat 2.2s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}14%{transform:scale(1.12)}28%{transform:scale(1)}42%{transform:scale(1.07)}}
+h1{margin:0;text-align:center;font-size:1.5rem;background:linear-gradient(90deg,#fff,#ffc9d9,#f6d9a8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sub{text-align:center;color:var(--mut);margin:6px 0 22px;font-size:.92rem}
+.field{position:relative;margin-bottom:14px}
+.field .ic{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:1.1rem;opacity:.85;pointer-events:none}
+.field input{width:100%;height:52px;padding:0 46px 0 46px;border-radius:16px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:var(--ink);font:inherit;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s,background .2s}
+.field input::placeholder{color:#a58fa0}
+.field input:focus{border-color:#f0a6bd;box-shadow:0 0 0 4px rgba(240,166,189,.22);background:rgba(255,255,255,.12)}
+.field .eye{position:absolute;left:8px;top:50%;transform:translateY(-50%);width:38px;height:38px;border:0;border-radius:12px;background:transparent;color:#ffd0dd;font-size:1.1rem;cursor:pointer}
+.go{width:100%;height:54px;border:0;border-radius:18px;font:inherit;font-size:1.05rem;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,#ef5b7c,#a02e5c);box-shadow:0 14px 34px rgba(239,91,124,.45);transition:transform .15s,filter .2s;position:relative;overflow:hidden}
+.go:active{transform:scale(.98)}
+.go:disabled{opacity:.7;cursor:wait}
+.go .spin{display:none;width:20px;height:20px;border:3px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:rot .8s linear infinite;margin:0 auto}
+.go.load .t{display:none}.go.load .spin{display:block}
+@keyframes rot{to{transform:rotate(360deg)}}
+.msg{min-height:1.6em;margin:12px 0 0;text-align:center;font-size:.92rem;color:#ffd0dd;white-space:pre-wrap}
+.msg.err{color:#ff9fb2}
+.card.shake{animation:shake .45s}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-9px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.back{display:block;text-align:center;margin-top:16px;color:#e9cdd8;font-size:.9rem;text-decoration:none}
+.back:hover{color:#fff}
+.lock-note{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid rgba(246,217,168,.16);color:var(--mut);font-size:.8rem}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}

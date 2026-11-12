@@ -37,7 +37,9 @@
   const other = (w) => (w === "ماجی" ? "محمد" : "ماجی");
   const ls = { get: (k) => { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, del: (k) => { try { localStorage.removeItem(k); } catch (e) {} } };
   const getWho = () => ls.get("who");
-  ls.del("acode"); let codeCache = ""; // رمز هرگز ذخیره نمی‌شود؛ با هر ورود به سایت دوباره پرسیده می‌شود
+  ls.del("acode");
+  const ss = { get: (k) => { try { return sessionStorage.getItem(k) || ""; } catch (e) { return ""; } }, set: (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) {} }, del: (k) => { try { sessionStorage.removeItem(k); } catch (e) {} } };
+  let codeCache = ss.get("acode"); // فقط در همین نشست؛ با خروج فراموش می‌شود (session.js)
   const openers = []; const reopenAll = (force) => openers.forEach((f) => f(force));
   const rpc = (name, body) => fetch(`${base}/rest/v1/rpc/${name}`, { method: "POST", headers: apiHeaders({ "Content-Type": "application/json" }), body: JSON.stringify(body || {}) }).then((r) => { if (!r.ok) throw Error(name); return r.json(); });
   const ago = (iso) => { const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000)); if (m < 1) return "همین الان"; if (m < 60) return fa(m) + " دقیقه پیش"; const h = Math.round(m / 60); if (h < 24) return fa(h) + " ساعت پیش"; return fa(Math.round(h / 24)) + " روز پیش"; };
@@ -47,49 +49,34 @@
   function askAccess() {
     if (codeCache && getWho()) return Promise.resolve({ code: codeCache, who: getWho() });
     return new Promise((resolve) => {
-      let who = getWho();
+      const who = getWho();
       const ov = el("div", "code-modal"); ov.setAttribute("role", "dialog"); ov.setAttribute("aria-modal", "true");
       const box = el("div", "code-box");
       const lock = el("div", "lock-heart"); lock.innerHTML = '<span class="lh-shackle"></span><span class="lh-body">♥</span>';
-      const row = el("div", "p2-row"); const chips = NAMES.map((n) => { const c = el("button", "p2-chip" + (who === n ? " on" : ""), n); c.type = "button"; c.onclick = () => { who = n; chips.forEach((x) => x.classList.toggle("on", x.textContent === n)); }; row.append(c); return c; });
       const input = el("input", "p2-input"); input.type = "password"; input.placeholder = "رمز مشترک"; input.autocomplete = "current-password";
       const msg = el("div", "code-msg"); const ok = el("button", "p2-btn", "تأیید"); ok.type = "button"; const no = el("button", "p2-btn secondary", "بعداً"); no.type = "button";
       const close = (v) => { ov.remove(); resolve(v); };
       const go = async () => {
-        if (!who) { msg.textContent = "اول انتخاب کن کدام‌یکی هستی."; return; }
-        if (codeCache) { ls.set("who", who); return close({ code: codeCache, who }); }
+        if (!who) { msg.textContent = "اول از صفحهٔ اصلی نقشت را انتخاب کن."; return; }
+        if (codeCache) { return close({ code: codeCache, who }); }
         if (!input.value) { msg.textContent = "رمز را بنویس."; return; }
         ok.disabled = true; msg.textContent = "در حال بررسی…";
         try {
           const good = (await rpc("verify_access_code", { p_access_code: input.value })) === true;
-          if (good) { codeCache = input.value; ls.set("who", who); window.dispatchEvent(new Event("p2-auth")); lock.classList.add("open"); setTimeout(() => { close({ code: codeCache, who }); reopenAll(); }, 450); }
+          if (good) { codeCache = input.value; ss.set("acode", codeCache); window.dispatchEvent(new Event("p2-auth")); lock.classList.add("open"); setTimeout(() => { close({ code: codeCache, who }); reopenAll(); }, 450); }
           else { msg.textContent = "رمز درست نیست."; lock.classList.add("shake"); setTimeout(() => lock.classList.remove("shake"), 600); ok.disabled = false; }
         } catch (e) { msg.textContent = "بررسی ممکن نشد."; ok.disabled = false; }
       };
       ok.onclick = go; no.onclick = () => close(null);
       input.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); if (e.key === "Escape") close(null); });
-      box.append(lock, el("p", "code-t", "این بخش مخصوص ما دو نفر است"), el("small", "p2-muted", "تو کی هستی؟"), row);
+      box.append(lock, el("p", "code-t", "این بخش مخصوص ما دو نفر است"), el("small", "p2-muted", who ? "ورود به‌عنوان " + who : ""));
       if (!codeCache) box.append(input);
       const act = el("div", "p2-row"); act.append(ok, no); box.append(msg, act); ov.append(box); document.body.appendChild(ov);
       (codeCache ? ok : input).focus();
     });
   }
-  function askWho() {
-    if (getWho()) return Promise.resolve(getWho());
-    return new Promise((resolve) => {
-      const ov = el("div", "code-modal"); const box = el("div", "code-box");
-      box.append(el("p", "code-t", "تو کی هستی؟")); const row = el("div", "p2-row");
-      NAMES.forEach((n) => { const b = el("button", "p2-btn", n); b.type = "button"; b.onclick = () => { ls.set("who", n); ov.remove(); resolve(n); }; row.append(b); });
-      const no = el("button", "p2-btn secondary", "بعداً"); no.type = "button"; no.onclick = () => { ov.remove(); resolve(""); };
-      row.append(no); box.append(row); ov.append(box); document.body.appendChild(ov);
-    });
-  }
-  function idBar(onChange) {
-    const bar = el("div", "id-bar"); bar.append(el("small", "p2-muted", "تو:"));
-    const chips = NAMES.map((n) => { const c = el("button", "p2-chip" + (getWho() === n ? " on" : ""), n); c.type = "button"; c.onclick = () => { ls.set("who", n); chips.forEach((x) => x.classList.toggle("on", x.textContent === n)); onChange && onChange(n); reopenAll(true); }; bar.append(c); return c; });
-    if (codeCache) { const out = el("button", "p2-chip ghost", "🔓 فراموش کردن رمز در این دستگاه"); out.type = "button"; out.onclick = () => { codeCache = ""; ls.del("acode"); out.remove(); }; bar.append(out); }
-    return bar;
-  }
+  function askWho() { return Promise.resolve(getWho()); }
+  function idBar() { const b = el("span"); b.hidden = true; return b; }
 
   /* ---------- renderers ---------- */
   const R = {};
@@ -277,11 +264,10 @@
     const lockBtn = el("button", "p2-btn", "🔐 باز کردن دفترچه"); lockBtn.type = "button"; body.append(lockBtn);
     async function show(code, me) {
       body.innerHTML = ""; const list = el("div", "gb-list"); const form = el("div", "gb-form");
-      const who = document.createElement("select"); who.className = "p2-input"; ["ماجی", "محمد"].forEach((n) => { const o = document.createElement("option"); o.value = n; o.textContent = "من " + n + " هستم"; who.append(o); });
-      if (me) who.value = me;
+      const who = { value: me || getWho() };
       const ta = el("textarea", "p2-input"); ta.rows = 3; ta.maxLength = 2000; ta.placeholder = "یک جمله برای دفترچه…";
       const send = el("button", "p2-btn", "ثبت در دفترچه 💌"); send.type = "button"; const msg = el("div", "p2-muted");
-      form.append(who, ta, send, msg); body.append(list, form);
+      form.append(ta, send, msg); body.append(list, form);
       const load = async () => {
         try {
           const rows = await rpc("get_guestbook", { p_access_code: code }); list.innerHTML = "";
@@ -338,7 +324,7 @@
     const open = async (a) => { opened = true; body.innerHTML = ""; try { await build(body, a); } catch (e) { body.textContent = "این بخش در دسترس نیست؛ migration دوطرفه را اجرا کن."; } };
     lockBtn.onclick = async () => { const a = await askAccess(); if (a && !opened) open(a); };
     openers.push((force) => { if (codeCache && getWho() && (force || !opened)) open({ code: codeCache, who: getWho() }); });
-    if (codeCache && getWho()) { rpc("verify_access_code", { p_access_code: codeCache }).then((ok) => { if (ok === true) open({ code: codeCache, who: getWho() }); else { codeCache = ""; ls.del("acode"); } }).catch(() => {}); }
+    if (codeCache && getWho()) { rpc("verify_access_code", { p_access_code: codeCache }).then((ok) => { if (ok === true) open({ code: codeCache, who: getWho() }); else { codeCache = ""; ss.del("acode"); } }).catch(() => {}); }
     return { body, open };
   };
 

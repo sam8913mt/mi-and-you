@@ -25,56 +25,6 @@
   const mkSection = (id, title, sub) => { const s = el("section", "phase2-section reveal show"); s.id = id; s.append(el("h2", "section-title", title), el("p", "section-sub", sub)); return s; };
   const todayKey = () => { const n = new Date(); return n.getFullYear() + "-" + (n.getMonth() + 1) + "-" + n.getDate(); };
 
-  /* ================= ۱) بوم نقاشی مشترک ================= */
-  function buildDraw() {
-    const sec = mkSection("drawSection", "🎨 بوم مشترک ما", "هر چه بکشی، همان لحظه روی گوشی طرف مقابل هم می‌افتد.");
-    const box = el("div", "m2-box"), cv = el("canvas"); box.append(cv); sec.append(box);
-    const tools = el("div", "m2-tools"); sec.append(tools);
-    const note = el("div", "m2-note", "برای نقاشی روی «شروع نقاشی» بزن (تا اسکرول صفحه قفل نشود)."); sec.append(note);
-    place(sec);
-    const ctx = cv.getContext("2d"); let W = 0, H = 0, dpr = 1, drawing = false, mode = false, color = "#C2607F", last = null, buf = [], timer = 0, size = 4;
-    const resize = () => { const snap = cv.width ? ctx.getImageData(0, 0, cv.width, cv.height) : null; dpr = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.lineCap = "round"; ctx.lineJoin = "round"; if (snap) try { ctx.putImageData(snap, 0, 0); } catch (e) {} };
-    resize(); addEventListener("resize", resize);
-    const seg = (a, b, c, s) => { ctx.strokeStyle = c; ctx.lineWidth = s; ctx.beginPath(); ctx.moveTo(a[0] * W, a[1] * H); ctx.lineTo(b[0] * W, b[1] * H); ctx.stroke(); };
-    const pt = (e) => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height]; };
-    const flush = () => { timer = 0; if (buf.length) { emit("draw", { c: color, s: size, p: buf }); buf = []; } };
-    cv.addEventListener("pointerdown", (e) => { if (!mode) return; drawing = true; last = pt(e); cv.setPointerCapture && cv.setPointerCapture(e.pointerId); buf.push([last[0], last[1], 1]); seg(last, last, color, size); e.preventDefault(); });
-    cv.addEventListener("pointermove", (e) => { if (!drawing) return; const p = pt(e); seg(last, p, color, size); last = p; buf.push([p[0], p[1], 0]); if (!timer) timer = setTimeout(flush, 70); e.preventDefault(); });
-    const up = () => { drawing = false; last = null; flush(); };
-    cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
-    let remoteLast = null;
-    window.addEventListener("live:draw", (ev) => { const d = ev.detail || {}; (d.p || []).forEach((q) => { if (q[2] || !remoteLast) remoteLast = [q[0], q[1]]; seg(remoteLast, [q[0], q[1]], d.c || "#783B55", d.s || 4); remoteLast = [q[0], q[1]]; }); remoteLast = null; });
-    window.addEventListener("live:drawclear", () => ctx.clearRect(0, 0, W, H));
-    const on = el("button", "", "✏️ شروع نقاشی"); on.type = "button";
-    on.onclick = () => { mode = !mode; cv.classList.toggle("on", mode); on.classList.toggle("on", mode); on.textContent = mode ? "✋ پایان نقاشی" : "✏️ شروع نقاشی"; };
-    tools.append(on);
-    ["#C2607F", "#ef5b7c", "#D6B77A", "#6b8cff", "#3aa876", "#51243B"].forEach((c, i) => { const b = el("button", "m2-sw" + (i === 0 ? " sel" : "")); b.type = "button"; b.style.background = c; b.setAttribute("aria-label", "رنگ"); b.onclick = () => { color = c; tools.querySelectorAll(".m2-sw").forEach((x) => x.classList.toggle("sel", x === b)); }; tools.append(b); });
-    const cl = el("button", "", "🧽 پاک کردن"); cl.type = "button"; cl.onclick = () => { ctx.clearRect(0, 0, W, H); emit("drawclear", {}); }; tools.append(cl);
-    const sv = el("button", "", "💾 ذخیره"); sv.type = "button";
-    sv.onclick = () => { const o = el("canvas"); o.width = cv.width; o.height = cv.height; const c = o.getContext("2d"); c.fillStyle = "#fff7f2"; c.fillRect(0, 0, o.width, o.height); c.drawImage(cv, 0, 0); o.toBlob((b) => { if (!b) return; const a = el("a"); a.href = URL.createObjectURL(b); a.download = "me-and-you-draw.png"; doc.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }); };
-    tools.append(sv);
-  }
-
-  /* ================= ۲) ضربان قلب هماهنگ ================= */
-  function buildPulse() {
-    const sec = mkSection("pulseSection", "💓 ضربان مشترک", "هر دو انگشت را روی قلب نگه دارید؛ ضربان‌ها یکی می‌شود.");
-    const st = el("div", "pulse-stage"), btn = el("button", "", "💗"); btn.id = "pulseBtn"; btn.type = "button"; btn.setAttribute("aria-label", "قلب را نگه دار");
-    const msg = el("div", "pulse-msg", ""); st.append(btn); sec.append(st, msg); place(sec);
-    let me = false, her = false, iv = 0;
-    const paint = () => {
-      btn.classList.toggle("me", me && !her); btn.classList.toggle("both", me && her);
-      const w = who() ? other(who()) : "او";
-      msg.textContent = me && her ? "قلب‌هایمان یکی شد 💞" : her ? `${w} دستش روی قلب است؛ تو هم بگذار 🤍` : me ? (partnerOn() ? `منتظر ${w}…` : `${w} الان آنلاین نیست`) : partnerOn() ? `${w} هم اینجاست؛ قلب را نگه دار` : "";
-      clearInterval(iv); iv = 0; if (me && her) { vibe([60, 110, 60, 420]); iv = setInterval(() => vibe([60, 110, 60, 420]), 1200); }
-    };
-    const set = (v) => { if (me === v) return; me = v; emit("hold", { on: v }); paint(); };
-    btn.addEventListener("pointerdown", (e) => { e.preventDefault(); set(true); }); ["pointerup", "pointercancel", "pointerleave"].forEach((t) => btn.addEventListener(t, () => set(false)));
-    btn.addEventListener("contextmenu", (e) => e.preventDefault());
-    window.addEventListener("live:hold", (e) => { her = !!(e.detail && e.detail.on); paint(); });
-    window.addEventListener("live:presence", (e) => { if (!(e.detail && e.detail.on)) her = false; paint(); });
-    paint();
-  }
-
   /* ================= ۳) موسیقی هم‌زمان ================= */
   function syncMusic() {
     const a = $("#music"); if (!a) return; let lock = false;
@@ -198,7 +148,7 @@
   /* ================= راه‌اندازی ================= */
   syncMusic(); gyro(); secretHeart();
   whenEl("main", () => setTimeout(() => {
-    buildDraw(); buildPulse(); buildScratch();
+    buildScratch();
   }, 900));
   whenEl(".route-arc", buildWeather);
   whenEl(".live-tick", (lt) => { buildNextMonth(lt); const sec = lt.closest(".counter") || lt.parentElement; buildThisDay(sec); });

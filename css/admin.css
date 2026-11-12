@@ -1,0 +1,59 @@
+/* پنل مدیریت — طراحی تیره و شیشه‌ای */
+:root{--bg:#150c1f;--card:rgba(255,255,255,.065);--soft:rgba(255,255,255,.055);--ink:#f8ecf1;--mut:#c9b0bf;--pri:#f0a6bd;--pri2:#ffe3ec;--acc:#e58aa8;--bd:rgba(246,217,168,.22);--danger:#e0506b;color-scheme:dark}
+html{background:var(--bg)}
+body{font-family:Vazirmatn,Tahoma,"Segoe UI",Arial,sans-serif;color:var(--ink);background:radial-gradient(900px 520px at 88% -8%,rgba(229,138,168,.28),transparent 60%),radial-gradient(800px 520px at -8% 6%,rgba(120,100,200,.22),transparent 58%),radial-gradient(700px 500px at 50% 112%,rgba(214,183,122,.14),transparent 60%),linear-gradient(160deg,#150c1f,#24122f 55%,#3a1a3f)!important;background-attachment:fixed!important}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(1.2px 1.2px at 12% 18%,#fff8 50%,transparent 51%),radial-gradient(1px 1px at 72% 12%,#fff7 50%,transparent 51%),radial-gradient(1.4px 1.4px at 38% 66%,#fff6 50%,transparent 51%),radial-gradient(1px 1px at 88% 58%,#fff7 50%,transparent 51%),radial-gradient(1.2px 1.2px at 22% 88%,#fff6 50%,transparent 51%),radial-gradient(1px 1px at 60% 40%,#fff5 50%,transparent 51%);z-index:0}
+main{position:relative;z-index:1}
+h1,h2,h3{color:var(--pri2)}
+a{color:#ffc2d4}
+.hint,small{color:var(--mut)}
+
+/* هدر */
+header{background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.04))!important;border:1px solid var(--bd)!important;border-radius:24px!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 50px rgba(0,0,0,.35)!important;border-top:0!important}
+header:before{background:linear-gradient(90deg,#ef5b7c,#f6d9a8,#9a7bff)!important;height:3px!important}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-ico{display:grid;place-items:center;width:52px;height:52px;border-radius:16px;font-size:1.6rem;background:linear-gradient(135deg,#ef5b7c,#8b2a55);box-shadow:0 10px 26px rgba(239,91,124,.45);animation:adHeart 2.4s ease-in-out infinite}
+@keyframes adHeart{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.brand h1{font-size:clamp(1.1rem,3.6vw,1.5rem);background:linear-gradient(90deg,#fff,#ffc9d9,#f6d9a8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.brand small{color:var(--mut);letter-spacing:.04em}
+
+/* پنل‌ها */
+.panel{background:var(--card)!important;border:1px solid var(--bd)!important;border-radius:22px!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 14px 40px rgba(0,0,0,.3)!important}
+.sec-head{border-bottom:1px solid rgba(246,217,168,.18)!important}
+.sec-head h2{background:linear-gradient(90deg,#fff,#ffc9d9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+label{color:#f1d9e3!important}
+input,textarea,select{background:rgba(255,255,255,.07)!important;color:var(--ink)!important;border:1px solid rgba(255,255,255,.2)!important;border-radius:14px!important}
+input::placeholder,textarea::placeholder{color:#a58fa0}
+input:focus,textarea:focus,select:focus{border-color:#f0a6bd!important;box-shadow:0 0 0 3px rgba(240,166,189,.25)!important;background:rgba(255,255,255,.1)!important}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23f0a6bd' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:left 14px center!important}
+select option{background:#2a1634;color:#fff}
+input[type=file]::file-selector-button{margin-inline-end:10px;border:0;border-radius:10px;padding:8px 14px;background:linear-gradient(135deg,#ef5b7c,#8b2a55);color:#fff;font:inherit;cursor:pointer}
+
+/* دکمه‌ها */
+button,.button{background:linear-gradient(135deg,#ef5b7c,#a02e5c)!important;color:#fff!important;border-radius:14px!important;box-shadow:0 8px 20px rgba(239,91,124,.3)!important}
+button.secondary,.button.secondary{background:rgba(255,255,255,.1)!important;color:#ffe3ec!important;border:1px solid rgba(255,255,255,.18)!important;box-shadow:none!important}
+button.danger{background:linear-gradient(135deg,#e0506b,#9c1f3a)!important}
+button:disabled{opacity:.45}
+
+/* ناوبری */
+.nav{background:rgba(26,13,36,.82)!important;border:1px solid var(--bd)!important;border-radius:22px!important;box-shadow:0 14px 36px rgba(0,0,0,.4)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.nav button{background:transparent!important;color:var(--mut)!important;border:0!important;box-shadow:none!important;border-radius:14px!important}
+.nav button:hover{background:rgba(255,255,255,.08)!important;color:#fff!important}
+.nav button.on{background:linear-gradient(135deg,#ef5b7c,#a02e5c)!important;color:#fff!important;box-shadow:0 8px 22px rgba(239,91,124,.4)!important}
+.nav button b{filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}
+
+/* گروه‌ها و کارت‌ها */
+details.grp{background:rgba(255,255,255,.05)!important;border:1px solid var(--bd)!important;border-radius:16px!important}
+details.grp>summary{color:var(--pri2)!important}
+.datebox,.photo-card,.p2-admin-item,.who-bar{background:rgba(255,255,255,.055)!important;border:1px solid var(--bd)!important;border-radius:16px!important}
+.p2-admin-item p{color:var(--mut)!important}
+.photo-card .num{color:#ffc2d4}
+.mt-card{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.04))!important;border:1px solid var(--bd)!important}
+.mt-head b{color:var(--pri2)!important}
+.mt-ico{background:linear-gradient(135deg,#ef5b7c,#a02e5c)!important}
+.mt-preview{background:linear-gradient(135deg,#8b2a55,#3a1a3f)!important}
+#datePreview{color:#f6d9a8}
+.p2-status{background:rgba(255,255,255,.08)!important;color:var(--pri2)!important}
+.savebar{border-top:1px solid rgba(246,217,168,.18)!important}
+#message{background:linear-gradient(135deg,#3a1a3f,#1f0f2b)!important;border:1px solid var(--bd);color:#fff}
+::-webkit-scrollbar{height:8px;width:8px}::-webkit-scrollbar-thumb{background:rgba(240,166,189,.4);border-radius:9px}

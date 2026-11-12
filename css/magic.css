@@ -105,3 +105,7 @@ html[data-tod="night"] body{background:radial-gradient(ellipse at 12% 8%,rgba(12
 .route-arc{margin:14px auto 0;max-width:520px}
 .route-arc svg{width:100%;height:auto;display:block;overflow:visible}
 .route-arc text{font-family:Vazirmatn,Tahoma,sans-serif;font-size:13px;fill:#F0C5D2}
+
+/* جلوگیری از روی‌هم‌افتادن دکمه‌ها: ستون چپ (موسیقی ← اعلان)، ستون راست (بوسه ← چت ← فضای مشترک) */
+#nfBell{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+@media(min-width:701px){#nfBell{bottom:calc(16px + env(safe-area-inset-bottom,0px))}}

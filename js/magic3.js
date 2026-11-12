@@ -114,54 +114,6 @@
     render(); window.addEventListener("p2-auth", render);
   }
 
-  /* ================= بازی دوز ================= */
-  function buildGame() {
-    const sec = mkSection("gameSection", "🎮 بازی دونفره", "دوز عاشقانه: ماجی 🌸 و محمد 🌙. اگر او آنلاین باشد، زنده بازی می‌کنید؛ وگرنه با کامپیوتر.");
-    const wrap = el("div", "g-wrap"), st = el("div", "g-status", "برای شروع «بازی جدید» را بزن"), bd = el("div", "g-board"), sc = el("div", "g-score");
-    const tools = el("div", "m2-tools"), nb = el("button", "", "🎲 بازی جدید"); nb.type = "button"; tools.append(nb);
-    wrap.append(st, bd, sc, tools); sec.append(wrap); place(sec);
-    const MARK = { "ماجی": "🌸", "محمد": "🌙" }, L = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
-    let b = Array(9).fill(""), turn = "", live = false, over = true, winLine = [];
-    const score = () => { try { return JSON.parse(ls.get("ttt-score") || "{}"); } catch (e) { return {}; } };
-    const showScore = () => { const s = score(); sc.textContent = `بازی‌های زنده — ماجی ${fa(s["ماجی"] || 0)} · محمد ${fa(s["محمد"] || 0)} · مساوی ${fa(s.d || 0)}`; };
-    const cells = Array.from({ length: 9 }, (_, i) => { const c = el("button", "g-cell"); c.type = "button"; c.onclick = () => tap(i); bd.append(c); return c; });
-    const paint = () => {
-      cells.forEach((c, i) => { c.textContent = b[i] ? MARK[b[i]] : ""; c.classList.toggle("win", winLine.includes(i)); });
-      const me = who();
-      if (over) return;
-      st.textContent = turn === me ? "نوبت توست 💗" : (live ? `منتظر ${turn}…` : "کامپیوتر دل فکر می‌کند…");
-    };
-    const check = () => { for (const l of L) if (b[l[0]] && b[l[0]] === b[l[1]] && b[l[0]] === b[l[2]]) return l; return b.every(Boolean) ? "draw" : null; };
-    const finish = (res) => {
-      over = true;
-      if (res === "draw") { st.textContent = "مساوی شد 🤝"; winLine = []; }
-      else { winLine = res; const w = b[res[0]]; st.textContent = w === who() ? "بردی! 🎉" : `${w} برد 🏆`; if (w === who()) { vibe([40, 60, 40]); if (window.MagicFx && MagicFx.confetti) MagicFx.confetti(2200); } }
-      if (live) { const s = score(); const k = res === "draw" ? "d" : b[res[0]]; s[k] = (s[k] || 0) + 1; ls.set("ttt-score", JSON.stringify(s)); showScore(); }
-      paint();
-    };
-    const play = (i, by) => { if (over || b[i] || turn !== by) return false; b[i] = by; const r = check(); if (r) finish(r); else { turn = other(by); paint(); } return true; };
-    const ai = () => {
-      if (over || live) return; const me = who(), cpu = other(me); if (turn !== cpu) return;
-      const free = b.map((v, i) => (v ? -1 : i)).filter((i) => i >= 0);
-      const find = (m) => { for (const l of L) { const v = l.map((i) => b[i]); if (v.filter((x) => x === m).length === 2 && v.includes("")) return l[v.indexOf("")]; } return -1; };
-      let m = find(cpu); if (m < 0) m = find(me); if (m < 0 && !b[4]) m = 4; if (m < 0) m = free[Math.floor(Math.random() * free.length)];
-      setTimeout(() => play(m, cpu), 600);
-    };
-    function tap(i) {
-      if (over) return; const me = who(); if (!me || turn !== me) return;
-      if (play(i, me)) { if (live) emit("ttt", { t: "move", i, by: me }); else ai(); }
-    }
-    function start(first, isLive) { b = Array(9).fill(""); winLine = []; over = false; live = isLive; turn = first; paint(); if (!live) ai(); }
-    nb.onclick = () => {
-      const me = who(); if (!me) { st.textContent = "اول نقشت را انتخاب کن"; return; }
-      const isLive = partnerOn(); start(me, isLive); if (isLive) emit("ttt", { t: "new", first: me });
-    };
-    window.addEventListener("live:ttt", (e) => {
-      const d = e.detail || {}; if (d.t === "new") start(d.first, true); else if (d.t === "move" && live && !over) play(d.i, d.by);
-    });
-    showScore(); paint();
-  }
-
   /* ================= فیلم خاطرات ================= */
   function buildMovie() {
     read("gallery_photos", "select=id,title,storage_path,created_at&order=created_at.asc&limit=80").then((rows) => {
@@ -196,69 +148,21 @@
     }
   }
 
-  /* ================= چت ================= */
-  function buildChat() {
-    const btn = el("button", ""); btn.id = "chatBtn"; btn.type = "button"; btn.setAttribute("aria-label", "چت");
-    const dot = el("span", "nf-dot"); btn.append(el("span", "", "💬"), dot);
-    const p = el("div", ""); p.id = "chatPanel";
-    const head = el("div", "ch-head"), st = el("span", "ch-dot"), ttl = el("div"); const tn = el("b", "", "چت"), ts = el("small", "", "");
-    ttl.append(tn, ts); const cx = el("button", "ch-x", "✕"); cx.type = "button"; head.append(st, ttl, cx);
-    const list = el("div", "ch-list"), typ = el("div", "ch-typing", ""), stk = el("div", "ch-stk");
-    ["😘", "🥰", "💗", "😂", "🤗", "🌹", "✨", "😴", "🫂", "💋", "🥺", "💞"].forEach((e) => { const b = el("button", "", e); b.type = "button"; b.onclick = () => send(e); stk.append(b); });
-    const inp = el("div", "ch-in"), ta = el("textarea"); ta.rows = 1; ta.maxLength = 1000; ta.placeholder = "پیامت را بنویس…";
-    const sb = el("button", "", "➤"); sb.type = "button"; sb.setAttribute("aria-label", "ارسال"); inp.append(ta, sb);
-    p.append(head, list, typ, stk, inp); doc.body.append(btn, p);
-    let msgs = [], ids = new Set(), pollT = 0, lastDay = "", seenTs = +ls.get("chat-seen") || 0, openP = false, typeT = 0, lastType = 0;
-    const me = () => who(), you = () => other(who() || "ماجی");
-    const status = () => { const on = partnerOn(); st.classList.toggle("on", on); ts.textContent = on ? "آنلاین" : "آفلاین"; tn.textContent = you(); };
-    const fit = () => { const v = window.visualViewport; p.style.height = (v ? v.height : innerHeight) + "px"; p.style.top = (v ? v.offsetTop : 0) + "px"; };
-    if (window.visualViewport) { visualViewport.addEventListener("resize", () => { fit(); list.scrollTop = list.scrollHeight; }); visualViewport.addEventListener("scroll", fit); }
-    const fmtT = (iso) => new Date(iso).toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" });
-    const bubble = (m) => {
-      const d = new Date(m.created_at).toLocaleDateString("fa-IR"); if (d !== lastDay) { lastDay = d; list.append(el("div", "ch-day", d)); }
-      const isMe = m.author === me(), emo = /^(\p{Extended_Pictographic}|\ufe0f|\u200d|\s){1,6}$/u.test(m.body);
-      const b = el("div", "ch-msg " + (isMe ? "me" : "you") + (emo ? " big" : "")); b.append(doc.createTextNode(m.body), el("small", "", fmtT(m.created_at))); list.append(b);
-    };
-    const render = (stick) => { const near = list.scrollHeight - list.scrollTop - list.clientHeight < 120; list.innerHTML = ""; lastDay = ""; if (!code() || !me()) { lock(); return; } msgs.forEach(bubble); if (stick || near) list.scrollTop = list.scrollHeight; };
-    const lock = () => { const l = el("div", "ch-lock"); l.append(doc.createTextNode("برای چت، اول با رمز مشترک وارد شو 🔐")); const b = el("button", "", "ورود"); b.type = "button"; b.onclick = async () => { await login(); await load(true); }; l.append(el("br"), b); list.append(l); };
-    const add = (m) => { if (ids.has(m.id)) return false; ids.add(m.id); msgs.push(m); msgs.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); return true; };
-    async function load(stick) {
-      if (!code() || !me()) { render(); return; }
-      try { const rows = await rpc("get_chat", { p_access_code: code(), p_limit: 80 }); let ch = false; rows.forEach((r) => { if (add(r)) ch = true; }); if (ch || stick) render(stick); markSeen(); }
-      catch (e) { if (!msgs.length) { list.innerHTML = ""; list.append(el("div", "ch-day", "چت هنوز راه‌اندازی نشده (فایل SQL چت را اجرا کن)")); } }
+  /* ================= پیوند به صفحه‌های جدا (چت و فضای مشترک) ================= */
+  function buildNav() {
+    const mk = (id, href, ico, label) => { const a = el("a"); a.id = id; a.href = href; a.setAttribute("aria-label", label); a.append(el("span", "", ico)); doc.body.append(a); return a; };
+    const chat = mk("chatBtn", "chat.html", "💬", "چت"), tg = mk("togetherBtn", "together.html", "🎮", "فضای مشترک");
+    const dot = el("span", "nf-dot"); chat.append(dot);
+    setInterval(() => { const ok = !$("#gate") && !!who(); chat.classList.toggle("show", ok); tg.classList.toggle("show", ok); }, 500);
+    async function unread() {
+      if (!code() || !who()) return;
+      try { const seen = +ls.get("chat-seen") || 0; const rows = await rpc("get_chat", { p_access_code: code(), p_limit: 30 }); const n = rows.filter((r) => r.author !== who() && !r.deleted_at && new Date(r.created_at).getTime() > seen).length; dot.textContent = n > 9 ? "۹+" : fa(n); dot.classList.toggle("on", n > 0); } catch (e) {}
     }
-    const markSeen = () => { if (!openP) return; const last = msgs.length ? new Date(msgs[msgs.length - 1].created_at).getTime() : 0; if (last > seenTs) { seenTs = last; ls.set("chat-seen", String(seenTs)); } dot.classList.remove("on"); };
-    async function checkUnread() {
-      if (openP || !code() || !me()) return;
-      try { const rows = await rpc("get_chat", { p_access_code: code(), p_limit: 30 }); const n = rows.filter((r) => r.author !== me() && new Date(r.created_at).getTime() > seenTs).length; dot.textContent = n > 9 ? "۹+" : fa(n); dot.classList.toggle("on", n > 0); } catch (e) {}
-    }
-    async function send(text) {
-      const t = String(text == null ? ta.value : text).trim(); if (!t) return;
-      if (!code()) { await login(); if (!code()) return; }
-      if (text == null) { ta.value = ""; ta.style.height = ""; }
-      const tmp = "tmp" + Date.now(), m = { id: tmp, author: me(), body: t, created_at: new Date().toISOString() }; add(m); render(true);
-      try {
-        const r = await rpc("send_chat", { p_access_code: code(), p_who: me(), p_body: t }); const row = Array.isArray(r) ? r[0] : r;
-        if (row && row.id) { ids.delete(tmp); msgs = msgs.filter((x) => x.id !== tmp); const real = { id: row.id, author: me(), body: t, created_at: row.created_at }; add(real); render(true); emit("chat", { id: row.id, body: t, ts: row.created_at }); }
-        else throw Error("x");
-      } catch (e) { msgs = msgs.filter((x) => x.id !== tmp); ids.delete(tmp); render(true); ta.value = t; }
-    }
-    sb.onclick = () => send(); ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !mob) { e.preventDefault(); send(); } });
-    ta.addEventListener("input", () => { ta.style.height = "auto"; ta.style.height = Math.min(120, ta.scrollHeight) + "px"; const n = Date.now(); if (n - lastType > 2000) { lastType = n; emit("typing", {}); } });
-    window.addEventListener("live:chat", (e) => { const d = e.detail || {}; if (!d.id) return; if (add({ id: d.id, author: you(), body: d.body, created_at: d.ts || new Date().toISOString() })) { if (openP) { render(); markSeen(); } else { dot.textContent = "۱"; dot.classList.add("on"); } vibe(30); } });
-    window.addEventListener("live:typing", () => { typ.textContent = `${you()} در حال نوشتن…`; clearTimeout(typeT); typeT = setTimeout(() => (typ.textContent = ""), 3000); });
-    window.addEventListener("live:presence", status);
-    function open() { openP = true; p.classList.add("open"); fit(); status(); load(true); clearInterval(pollT); pollT = setInterval(() => { if (!doc.hidden) load(); }, 7000); doc.body.style.overflow = "hidden"; setTimeout(() => (list.scrollTop = list.scrollHeight), 60); }
-    function close() { openP = false; p.classList.remove("open"); clearInterval(pollT); doc.body.style.overflow = ""; }
-    btn.onclick = open; cx.onclick = close;
-    window.addEventListener("p2-auth", () => { if (openP) load(true); else checkUnread(); });
-    const iv = setInterval(() => { btn.classList.toggle("show", !$("#gate") && !!me()); }, 500);
-    setInterval(() => { if (!doc.hidden) checkUnread(); }, 60000);
-    window.Chat = { open, close };
+    window.addEventListener("p2-auth", unread); setInterval(() => { if (!doc.hidden) unread(); }, 60000);
   }
 
   /* ================= راه‌اندازی ================= */
   seasons();
-  whenEl("main", () => setTimeout(() => { buildGame(); buildMiss(); buildMovie(); }, 1300));
-  buildChat();
+  whenEl("main", () => setTimeout(() => { buildMiss(); buildMovie(); }, 1300));
+  buildNav();
 })();

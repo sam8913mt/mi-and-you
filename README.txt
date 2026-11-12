@@ -120,7 +120,12 @@
 
 ساختار پوشه‌ها
 --------------
-index.html, admin.html, sw.js, manifest.webmanifest   صفحه‌ها (sw.js و manifest باید در ریشه بمانند)
+index.html        صفحهٔ اصلی
+chat.html         چت دونفره (متن، ویرایش، حذف، ریپلای، ریکشن، ویس، ویدئو، عکس)
+together.html     فضای مشترک (بوسه، بوم، ضربان هماهنگ، دوز)
+admin-login.html  ورود مدیر
+admin.html        پنل مدیریت
+sw.js, manifest.webmanifest   (باید در ریشه بمانند)
 css/       استایل‌ها
 js/        اسکریپت‌ها (هسته، بخش‌های عمومی، افکت‌ها، اعلان‌ها، پنل مدیر)
 assets/    موسیقی، فونت‌ها، آیکون‌ها، عکس‌های اولیه (starter-photos)

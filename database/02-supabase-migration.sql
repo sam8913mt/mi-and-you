@@ -70,7 +70,8 @@ create policy "Admins only private messages" on public.private_messages for all 
 drop policy if exists "Public can read active quiz" on public.quiz_questions;
 drop policy if exists "Admins read quiz" on public.quiz_questions;
 create policy "Admins read quiz" on public.quiz_questions for select to authenticated using (public.is_site_admin());
-create or replace view public.public_quiz_questions as
+drop view if exists public.public_quiz_questions;
+create view public.public_quiz_questions as
   select id, question, options, sort_order from public.quiz_questions where active = true;
 grant select on public.public_quiz_questions to anon, authenticated;
 drop policy if exists "Admins manage quiz" on public.quiz_questions;

@@ -16,7 +16,8 @@ alter table public.love_letters add column if not exists read_at timestamptz;
 alter table public.quiz_questions add column if not exists author text;
 alter table public.quiz_questions drop constraint if exists quiz_questions_author_check;
 alter table public.quiz_questions add constraint quiz_questions_author_check check (author is null or author in ('ماجی','محمد'));
-create or replace view public.public_quiz_questions as
+drop view if exists public.public_quiz_questions;
+create view public.public_quiz_questions as
   select id, question, options, sort_order, author from public.quiz_questions where active = true;
 grant select on public.public_quiz_questions to anon, authenticated;
 
