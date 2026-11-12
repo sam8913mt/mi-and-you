@@ -1,6 +1,6 @@
 /* Service worker: دریافت اعلان‌ها (Web Push) */
-const CACHE = "me-and-you-v3";
-const SHELL = ["./", "index.html", "chat.html", "together.html", "manifest.webmanifest", "css/romantic.css", "css/magic.css", "css/magic2.css", "css/magic3.css", "css/chat.css", "css/together.css", "js/jdate.js", "js/supabase-config.js", "js/site.js", "js/session.js", "js/auth-lite.js", "js/live-core.js", "js/phase2-public.js", "js/more-public.js", "js/romantic.js", "js/emoji-fix.js", "js/notify.js", "js/magic.js", "js/magic2.js", "js/magic3.js", "js/chat.js", "js/together.js", "assets/icons/icon-192.png"];
+const CACHE = "me-and-you-v4";
+const SHELL = ["./", "index.html", "chat.html", "together.html", "manifest.webmanifest", "css/romantic.css", "css/magic.css", "css/magic2.css", "css/magic3.css", "css/chat.css", "css/together.css", "js/jdate.js", "js/supabase-config.js", "js/site.js", "js/session.js", "js/restore.js", "js/auth-lite.js", "js/live-core.js", "js/phase2-public.js", "js/more-public.js", "js/romantic.js", "js/emoji-fix.js", "js/notify.js", "js/magic.js", "js/magic2.js", "js/magic3.js", "js/chat.js", "js/together.js", "assets/icons/icon-192.png"];
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => Promise.all(SHELL.map((u) => c.add(u).catch(() => null)))).then(() => self.skipWaiting()));
 });

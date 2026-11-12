@@ -64,28 +64,29 @@
   function chooseRole(w) {
     ls.set("who", w); window.MY_WHO = w; setGateTexts(w); applyTod();
     gateCard.classList.remove("await-role");
-    const chip = $(".role-chip", gateCard); if (chip) chip.firstChild.textContent = "ورود به‌عنوان " + w;
-    vibe(20); Live.start();
+        vibe(20); Live.start();
     window.dispatchEvent(new Event("role-chosen"));
   }
   if (gate && gateCard) {
-    gateCard.classList.add("await-role");
     const last = getWho();
-    const step = el("div", "role-step");
-    step.append(el("div", "role-q", "تو کی هستی؟ 🤍"));
-    const row = el("div", "role-row");
-    [["ماجی", "🌸", "ماجده"], ["محمد", "🌙", "محمد"]].forEach(([w, ico, sub]) => {
-      const b = el("button", "role-btn" + (last === w ? " last" : "")); b.type = "button";
-      b.append(el("span", "role-ico", ico), el("span", "", w), el("small", "", sub === w ? "ورود به‌عنوان " + w : sub));
-      b.onclick = () => { b.classList.add("pick"); setTimeout(() => chooseRole(w), 180); };
-      row.append(b);
-    });
-    step.append(row);
-    const chip = el("div", "role-chip"); chip.append(doc.createTextNode(""), (() => { const u = el("u", "", "تغییر"); u.onclick = () => { gateCard.classList.add("await-role"); }; return u; })());
-    const title = $(".gate-title", gateCard);
-    title.after(chip); chip.after(step);
-    $(".gate-sub", gateCard).textContent = "";
-    if (last) { setGateTexts(last); }
+    if (last) {
+      // نقش فقط یک بار انتخاب می‌شود؛ بعد از آن در همین دستگاه می‌ماند
+      setGateTexts(last); window.MY_WHO = last; setTimeout(() => Live.start(), 0);
+    } else {
+      gateCard.classList.add("await-role");
+      const step = el("div", "role-step");
+      step.append(el("div", "role-q", "تو کی هستی؟ 🤍"));
+      const row = el("div", "role-row");
+      [["ماجی", "🌸", "ماجده"], ["محمد", "🌙", "محمد"]].forEach(([w, ico, sub]) => {
+        const b = el("button", "role-btn"); b.type = "button";
+        b.append(el("span", "role-ico", ico), el("span", "", w), el("small", "", sub === w ? "ورود به‌عنوان " + w : sub));
+        b.onclick = () => { b.classList.add("pick"); setTimeout(() => chooseRole(w), 180); };
+        row.append(b);
+      });
+      step.append(row);
+      const title = $(".gate-title", gateCard); title.after(step);
+      $(".gate-sub", gateCard).textContent = "";
+    }
   }
   window.MY_WHO = getWho();
 

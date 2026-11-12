@@ -152,6 +152,6 @@
   }, 900));
   whenEl(".route-arc", buildWeather);
   whenEl(".live-tick", (lt) => { buildNextMonth(lt); const sec = lt.closest(".counter") || lt.parentElement; buildThisDay(sec); });
-  let fdone = false; const fireFortune = () => { if (fdone) return; fdone = true; setTimeout(fortune, 1200); };
+  let fdone = false; const fireFortune = () => { if (fdone) return; fdone = true; try { if (sessionStorage.getItem("fortune-shown")) return; sessionStorage.setItem("fortune-shown", "1"); } catch (e) {} setTimeout(fortune, 1200); };
   window.addEventListener("intro-done", () => setTimeout(fireFortune, 9000)); if (!$("#gate")) setTimeout(fireFortune, 4000);
 })();
