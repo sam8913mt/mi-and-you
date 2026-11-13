@@ -20,7 +20,7 @@
   let regPromise = null;
   const getReg = () => {
     if (!("serviceWorker" in navigator)) return Promise.resolve(null);
-    if (!regPromise) regPromise = navigator.serviceWorker.register("sw.js?v=18", { updateViaCache: "none" }).then(() => navigator.serviceWorker.ready).catch(() => null);
+    if (!regPromise) regPromise = navigator.serviceWorker.register("sw.js?v=20", { updateViaCache: "none" }).then(() => navigator.serviceWorker.ready).catch(() => null);
     return regPromise;
   };
   getReg();
@@ -127,6 +127,7 @@
       off.onclick = async () => { await unsubscribe(); renderPanel(); };
       acts.append(off);
     }
+    if (window.Themes) { const tb = el("button", "p2-btn secondary", "🎨 تم‌ها"); tb.type = "button"; tb.onclick = () => { panel.classList.remove("open"); window.Themes.openPicker(); }; acts.append(tb); }
     if (window.__installPrompt) { const ins = el("button", "p2-btn secondary", "📲 نصب سایت مثل اپ"); ins.type = "button"; ins.onclick = async () => { try { window.__installPrompt.prompt(); await window.__installPrompt.userChoice; } catch (e) {} window.__installPrompt = null; renderPanel(); }; acts.append(ins); }
     const { code } = creds();
     if (!code || !who) {

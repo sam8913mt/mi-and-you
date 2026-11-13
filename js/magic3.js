@@ -64,35 +64,6 @@
   }
   new MutationObserver(() => { if (!wishRaf) wishRaf = requestAnimationFrame(decorateWishes); }).observe(doc.body, { childList: true, subtree: true });
 
-  /* ================= فصل‌ها ================= */
-  function seasons() {
-    if (rm || !window.JDate) return;
-    const z = new Date(Date.now() + 3.5 * 3600000), tj = JDate.toJalali(z.getUTCFullYear(), z.getUTCMonth() + 1, z.getUTCDate());
-    const s = tj.jm <= 3 ? "spring" : tj.jm <= 6 ? "summer" : tj.jm <= 9 ? "autumn" : "winter";
-    const cv = el("canvas"); cv.id = "seasonFx"; doc.body.append(cv); const ctx = cv.getContext("2d");
-    let W = 0, H = 0, dpr = 1; const resize = () => { dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
-    resize(); addEventListener("resize", resize);
-    const N = mob ? 20 : 42, col = { spring: ["#ffc2d4", "#ffdce6", "#fff"], autumn: ["#d9822b", "#b5502a", "#e8b04a", "#9c3d1e"], winter: ["#ffffff", "#e6f0ff"], summer: ["#ffe08a", "#fff3b0"] }[s];
-    const mk = (init) => ({ x: rand(0, W), y: init ? rand(0, H) : rand(-40, -5), v: rand(.5, 1.6), s: rand(4, 10), r: rand(0, 6), vr: rand(-.03, .03), sw: rand(0, 6), c: col[Math.floor(Math.random() * col.length)], p: rand(0, 6) });
-    const P = Array.from({ length: N }, () => mk(true)); let last = 0, run = true;
-    const draw = (t) => {
-      if (!run) return; requestAnimationFrame(draw); if (doc.hidden || t - last < 33) return; last = t; ctx.clearRect(0, 0, W, H);
-      P.forEach((p, i) => {
-        p.sw += .02; p.r += p.vr;
-        if (s === "summer") { p.x += Math.sin(p.sw) * .5; p.y += Math.cos(p.sw * .7) * .4; const a = .25 + .6 * Math.abs(Math.sin(t / 900 + p.p)); ctx.globalAlpha = a; ctx.fillStyle = p.c; ctx.shadowColor = "#ffe08a"; ctx.shadowBlur = 12; ctx.beginPath(); ctx.arc(p.x, p.y, 2.4, 0, 6.3); ctx.fill(); ctx.shadowBlur = 0; return; }
-        p.y += p.v * (s === "winter" ? .8 : 1); p.x += Math.sin(p.sw) * (s === "winter" ? .6 : 1);
-        if (p.y > H + 20) P[i] = mk(false);
-        ctx.save(); ctx.globalAlpha = .8; ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c;
-        if (s === "winter") { ctx.beginPath(); ctx.arc(0, 0, p.s / 3, 0, 6.3); ctx.fill(); }
-        else if (s === "spring") { ctx.beginPath(); ctx.ellipse(0, 0, p.s * .8, p.s * .45, 0, 0, 6.3); ctx.fill(); }
-        else { ctx.beginPath(); ctx.moveTo(0, -p.s); ctx.quadraticCurveTo(p.s, 0, 0, p.s); ctx.quadraticCurveTo(-p.s, 0, 0, -p.s); ctx.fill(); }
-        ctx.restore();
-      });
-      ctx.globalAlpha = 1;
-    };
-    requestAnimationFrame(draw);
-  }
-
   /* ================= شمارندهٔ دلتنگی ================= */
   function buildMiss() {
     const sec = mkSection("missStats", "📊 شمارندهٔ دلتنگی", "هر بار دلتنگ شدی بزن؛ ببین این ماه چند بار دلتنگ هم بوده‌اید.");
@@ -162,7 +133,6 @@
   }
 
   /* ================= راه‌اندازی ================= */
-  seasons();
   whenEl("main", () => setTimeout(() => { buildMiss(); buildMovie(); }, 1300));
   buildNav();
 })();
