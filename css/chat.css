@@ -185,3 +185,18 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offse
 .ch-gal-i span{position:absolute;inset:auto 6px 6px auto;color:#fff;font-size:1.2rem;text-shadow:0 1px 6px #000}
 .ch-light video{max-width:96vw;max-height:88dvh;border-radius:8px}
 .ch-light{z-index:70}
+
+/* ویدئو مسیج دایره‌ای */
+.ch-msg.rv{background:none!important;border:0!important;box-shadow:none!important;padding:0;min-width:0}
+.ch-round{position:relative;width:min(62vw,240px);height:min(62vw,240px);border-radius:50%;overflow:hidden;background:#000;cursor:pointer;border:3px solid #fff;box-shadow:0 8px 24px rgba(61,27,52,.35);-webkit-tap-highlight-color:transparent}
+.me .ch-round{border-color:#F0C5D2}
+.ch-round video{width:100%;height:100%;object-fit:cover;pointer-events:none;display:block}
+.ch-round svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);pointer-events:none}
+.ch-round svg circle{fill:none;stroke-width:3.2;stroke-linecap:round}
+.ch-round svg circle.rb{stroke:rgba(255,255,255,.25)}
+.ch-round svg circle:not(.rb){stroke:#F6D9A8;stroke-dasharray:var(--c);stroke-dashoffset:var(--c);transition:stroke-dashoffset .25s linear}
+.ch-round .rp{position:absolute;inset:0;display:grid;place-items:center;font-size:2.8rem;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.7);background:rgba(0,0,0,.2)}
+.ch-round.playing .rp{display:none}
+.ch-round .rd{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);padding:1px 10px;border-radius:99px;background:rgba(0,0,0,.55);color:#fff;font-size:.74rem;font-variant-numeric:tabular-nums}
+.rv .ch-meta{margin-top:3px;justify-content:center;color:var(--mut)!important}
+.me .rv .ch-dots2{background:rgba(0,0,0,.1)}

@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Vazirmatn:wght@300;400;600;800&display=swap">
-<link rel="stylesheet" href="css/watch.css?v=15">
+<link rel="stylesheet" href="css/watch.css?v=18">
 </head>
 <body>
 <header class="w-head">
@@ -25,6 +25,15 @@
       <button id="wGo" class="w-btn go" type="button">بارگذاری برای هر دو</button>
     </div>
     <p class="w-hint" id="wHint">لینک مستقیم (mp4/webm/m3u8): پخش، مکث و جلو/عقب کردن کاملاً هم‌زمان می‌شود. آپارات: فیلم برای هر دو باز می‌شود و با «شمارش معکوس» هم‌زمان شروع می‌کنید.</p>
+  </section>
+
+  <section class="w-card" id="wShareCard">
+    <div class="w-row">
+      <button id="wShare" class="w-btn go" type="button">📺 اشتراک‌گذاری صفحه (برای آپارات و هر سایت)</button>
+      <button id="wShareStop" class="w-btn danger" type="button" hidden>⏹ توقف اشتراک</button>
+    </div>
+    <p class="w-hint" id="wShareHint">برای فیلم‌هایی که کنترل پخششان ممکن نیست (مثل آپارات): یکی از شما از کامپیوتر تب فیلم را به اشتراک می‌گذارد و آن یکی، حتی با گوشی، همان لحظه می‌بیند؛ پس پخش کاملاً هم‌زمان است. هنگام اشتراک گزینهٔ «Share tab audio» را تیک بزن.</p>
+    <div class="w-player" id="wShareBox" hidden><video id="wShareV" autoplay playsinline></video></div>
   </section>
 
   <section class="w-stage" id="wStage" hidden>
@@ -59,12 +68,13 @@
     </div>
   </section>
 </main>
+<button class="w-toggle" id="wToggle" type="button" hidden aria-label="پخش و مکث مشترک">▶</button>
 <div class="w-count" id="wCountOv" hidden></div>
 <div class="w-toast" id="wToast" hidden></div>
 <div class="w-gate" id="wGate" hidden></div>
-<script src="js/supabase-config.js?v=15"></script>
-<script src="js/session.js?v=15"></script>
-<script src="js/live-core.js?v=15"></script>
-<script src="js/watch.js?v=15"></script>
+<script src="js/supabase-config.js?v=18"></script>
+<script src="js/session.js?v=18"></script>
+<script src="js/live-core.js?v=18"></script>
+<script src="js/watch.js?v=18"></script>
 </body>
 </html>

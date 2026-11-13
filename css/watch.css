@@ -41,3 +41,12 @@ main{width:min(760px,100%);margin:0 auto;padding:14px 14px calc(30px + env(safe-
 .w-gate a{display:inline-block;margin-top:12px;padding:11px 26px;border-radius:99px;background:linear-gradient(135deg,#C2607F,#783B55);color:#fff;text-decoration:none}
 [hidden]{display:none!important}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+
+.w-tap{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:rgba(0,0,0,.55);color:#fff;font-size:1.1rem;font-weight:700;width:100%}
+.w-player video{object-fit:contain}
+#wShareBox{margin-top:10px}
+
+.w-toggle{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:65;min-width:190px;padding:15px 26px;border-radius:99px;background:linear-gradient(135deg,#C2607F,#783B55);color:#fff;font-size:1.15rem;font-weight:700;box-shadow:0 14px 36px rgba(120,59,85,.6);border:2px solid rgba(246,217,168,.6)}
+.w-toggle:active{transform:translateX(-50%) scale(.95)}
+.w-toggle.playing{background:linear-gradient(135deg,#3aa876,#1f6f4d)}
+main{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}

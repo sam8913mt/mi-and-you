@@ -20,7 +20,7 @@
   let regPromise = null;
   const getReg = () => {
     if (!("serviceWorker" in navigator)) return Promise.resolve(null);
-    if (!regPromise) regPromise = navigator.serviceWorker.register("sw.js?v=15", { updateViaCache: "none" }).then(() => navigator.serviceWorker.ready).catch(() => null);
+    if (!regPromise) regPromise = navigator.serviceWorker.register("sw.js?v=18", { updateViaCache: "none" }).then(() => navigator.serviceWorker.ready).catch(() => null);
     return regPromise;
   };
   getReg();

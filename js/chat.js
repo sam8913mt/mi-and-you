@@ -103,7 +103,7 @@
   function bubble(m) {
     const mine = m.author === me, row = el("div", "ch-row " + (mine ? "me" : "you")); row.dataset.id = m.id;
     const big = m.kind === "text" && !m.deleted_at && isEmojiOnly(m.body);
-    const b = el("div", "ch-msg" + (big ? " ch-big" : "")); row.append(b);
+    const b = el("div", "ch-msg" + (big ? " ch-big" : "") + (m.kind === "video" && !m.deleted_at ? " rv" : "")); row.append(b);
     if (m.reply_to && !m.deleted_at) {
       const r = msgs.get(m.reply_to), qb = el("div", "ch-quote"); qb.append(el("b", "", r ? (r.author === me ? "تو" : r.author) : "پیام"), el("span", "", snippet(r)));
       qb.onclick = () => jumpTo(m.reply_to); b.append(qb);
@@ -111,7 +111,7 @@
     if (m.deleted_at) { b.append(el("div", "ch-del ch-txt", "🚫 این پیام حذف شد")); }
     else if (m.kind === "text") { const t = el("div", "ch-txt"); linkify(t, m.body); b.append(t); }
     else if (m.kind === "image") { const i = el("img", "ch-img"); i.loading = "lazy"; i.alt = "عکس"; i.src = mediaUrl(m.media); i.onclick = () => lightbox(i.src); i.onload = () => { if (firstLoad) list.scrollTop = list.scrollHeight; }; b.append(i); }
-    else if (m.kind === "video") { const v = el("video", "ch-vid"); v.controls = true; v.playsInline = true; v.preload = "metadata"; v.src = mediaUrl(m.media) + "#t=0.1"; b.append(v); }
+    else if (m.kind === "video") b.append(roundVideo(m));
     else if (m.kind === "voice") b.append(voice(m));
     if (!big || m.deleted_at) {
       const meta = el("div", "ch-meta"); if ((m.starred || []).includes(me) && !m.deleted_at) meta.append(el("span", "ch-star", "⭐")); if (m.pinned && !m.deleted_at) meta.append(el("span", "ch-star", "📌")); if (m.expires_at && !m.deleted_at) meta.append(el("span", "ch-ttl", "⏳")); if (m.edited_at && !m.deleted_at) meta.append(el("span", "", "ویرایش‌شده")); meta.append(el("span", "", fmtT(m.created_at)));
@@ -162,6 +162,26 @@
     try { const rows = await rpc("get_chat", { p_limit: 100, p_before: first.created_at }); if (rows.length < 100) oldestLoaded = true; rows.forEach((r) => msgs.set(r.id, r)); const h = list.scrollHeight; render(); list.scrollTop = list.scrollHeight - h; sig = ""; } catch (e) {}
   }
 
+  function roundVideo(m) {
+    const C = 295.31, w = el("div", "ch-round"); w.style.setProperty("--c", C);
+    const v = el("video"); v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "metadata"; v.loop = false; v.muted = true; v.src = mediaUrl(m.media) + "#t=0.1";
+    const ring = document.createElementNS("http://www.w3.org/2000/svg", "svg"); ring.setAttribute("viewBox", "0 0 100 100");
+    const bg = document.createElementNS("http://www.w3.org/2000/svg", "circle"), fg = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    [bg, fg].forEach((c) => { c.setAttribute("cx", "50"); c.setAttribute("cy", "50"); c.setAttribute("r", "47"); }); bg.setAttribute("class", "rb"); ring.append(bg, fg);
+    const pp = el("div", "rp", "▶"), dur = el("span", "rd", fmtDur(m.dur || 0));
+    v.addEventListener("timeupdate", () => { if (v.duration) { fg.style.strokeDashoffset = String(C * (1 - v.currentTime / v.duration)); dur.textContent = fmtDur(v.duration - v.currentTime); } });
+    v.addEventListener("loadedmetadata", () => { if (!m.dur && isFinite(v.duration)) dur.textContent = fmtDur(v.duration); });
+    const stop = () => { w.classList.remove("playing"); fg.style.strokeDashoffset = String(C); dur.textContent = fmtDur(m.dur || v.duration || 0); v.muted = true; };
+    v.addEventListener("ended", stop); v.addEventListener("pause", () => { if (!v.ended) w.classList.remove("playing"); });
+    w.onclick = (e) => {
+      e.stopPropagation();
+      if (!v.paused) { v.pause(); return; }
+      if (curAudio) { curAudio.pause(); curAudio = null; }
+      document.querySelectorAll(".ch-round video").forEach((o) => { if (o !== v) o.pause(); });
+      if (v.ended || v.currentTime < 0.2) v.currentTime = 0; v.muted = false; v.play().then(() => w.classList.add("playing")).catch(() => { v.muted = true; v.play().then(() => w.classList.add("playing")).catch(() => {}); });
+    };
+    w.append(v, ring, pp, dur); return w;
+  }
   /* ---------- پلیر ویس ---------- */
   function voice(m) {
     const w = el("div", "ch-voice"), pp = el("button", "pp", "▶"); pp.type = "button";

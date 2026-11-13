@@ -12,6 +12,13 @@
   let toastT = 0; const toast = (t) => { const b = $("wToast"); b.textContent = t; b.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (b.hidden = true), 3800); };
   const say = (who, text) => { const m = el("div", "w-msg " + who, text); const box = $("wMsgs"); box.append(m); while (box.children.length > 60) box.firstChild.remove(); box.scrollTop = box.scrollHeight; };
 
+  function tapOverlay(host, label, fn) {
+    host.querySelectorAll(".w-tap").forEach((x) => x.remove());
+    const b = el("button", "w-tap", label); b.type = "button"; b.onclick = () => { b.remove(); fn(); }; host.append(b); return b;
+  }
+  let lastState = { at: 0, t: 0, playing: false };
+  const estAt = () => lastState.at + (lastState.playing ? (Date.now() - lastState.t) / 1000 : 0);
+
   /* ---------- تشخیص لینک ---------- */
   function parse(u) {
     u = String(u || "").trim(); if (!u) return null;
@@ -36,12 +43,13 @@
     $("wToolsAparat").hidden = info.kind !== "aparat"; $("wToolsDirect").hidden = info.kind !== "direct";
     if (info.kind === "aparat") {
       const f = document.createElement("iframe"); f.src = `https://www.aparat.com/video/video/embed/videohash/${info.hash}/vt/frame`; f.allow = "autoplay; fullscreen; picture-in-picture"; f.allowFullscreen = true; f.setAttribute("title", "آپارات"); box.append(f);
-      say("sys", fromRemote ? `${you} یک فیلم آپارات باز کرد` : "فیلم آپارات باز شد؛ برای شروع هم‌زمان از «شمارش معکوس» استفاده کنید");
+      say("sys", fromRemote ? `${you} یک فیلم آپارات باز کرد` : "فیلم آپارات باز شد. پخش آپارات از بیرون قابل کنترل نیست؛ برای پخش کاملاً هم‌زمان از «اشتراک‌گذاری صفحه» استفاده کنید یا با «شمارش معکوس» هم‌زمان شروع کنید.");
     } else {
       const v = document.createElement("video"); v.controls = true; v.playsInline = true; v.preload = "metadata"; vid = v; box.append(v);
       if (/\.m3u8(\?|$)/i.test(info.url)) loadHls(info.url, v); else v.src = info.url;
       v.onerror = () => toast("این لینک قابل پخش نیست؛ لینک مستقیم فایل ویدئو لازم است");
       const guard = (fn) => (...a) => { if (applying) return; fn(...a); };
+      v.addEventListener("play", () => { ctlPlaying = true; ctlLabel(); }); v.addEventListener("pause", () => { ctlPlaying = false; ctlLabel(); });
       v.addEventListener("play", guard(() => emit("watch", { t: "play", at: v.currentTime })));
       v.addEventListener("pause", guard(() => emit("watch", { t: "pause", at: v.currentTime })));
       v.addEventListener("seeked", guard(() => emit("watch", { t: "seek", at: v.currentTime, playing: !v.paused })));
@@ -51,30 +59,64 @@
     stage.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   const apply = (fn) => { applying = true; try { fn(); } catch (e) {} setTimeout(() => (applying = false), 600); };
+  function remotePlay(at) {
+    if (!vid) return; lastState = { at, t: Date.now(), playing: true }; seekTo(at);
+    vid.play().then(() => box.querySelectorAll(".w-tap").forEach((x) => x.remove())).catch(() => {
+      vid.muted = true;
+      vid.play().then(() => tapOverlay(box, "🔊 بزن تا صدا باز شود", () => { vid.muted = false; })).catch(() => tapOverlay(box, "▶ بزن تا پخش هم‌زمان شود", () => { vid.muted = false; vid.currentTime = estAt(); vid.play().catch(() => {}); }));
+    });
+  }
   const seekTo = (t) => { if (vid && isFinite(t) && Math.abs(vid.currentTime - t) > 0.6) vid.currentTime = t; };
 
+  let pendingLoad = null, loadSeq = 0;
+  function sendLoad(info) {
+    const id = ++loadSeq; pendingLoad = { id, tries: 0 };
+    const tick = () => {
+      if (!pendingLoad || pendingLoad.id !== id) return;
+      if (pendingLoad.tries++ >= 6) { pendingLoad = null; toast(`${you} هنوز فیلم را دریافت نکرده؛ مطمئن شو او هم در صفحهٔ «فیلم دونفره» است`); return; }
+      emit("watch", { t: "load", info, id }); setTimeout(tick, 1800);
+    };
+    tick();
+  }
   $("wGo").onclick = () => {
     const info = parse($("wUrl").value); if (!info) { toast("لینک معتبر بنویس (با https)"); return; }
-    open(info, false); emit("watch", { t: "load", info });
-    if (!online()) toast(`${you} الان آنلاین نیست؛ وقتی آمد فیلم برایش باز می‌شود`);
+    open(info, false);
+    if (!online()) toast(`${you} الان در این صفحه نیست؛ وقتی بیاید فیلم برایش باز می‌شود`); else toast("در حال ارسال برای " + you + "…");
+    sendLoad(info);
   };
   $("wUrl").addEventListener("keydown", (e) => { if (e.key === "Enter") $("wGo").click(); });
   $("wFull").onclick = () => { const t = box; (t.requestFullscreen || t.webkitRequestFullscreen || (() => {})).call(t); };
   $("wSyncNow").onclick = () => { if (vid) emit("watch", { t: "state", at: vid.currentTime, playing: !vid.paused, force: true }); toast("درخواست هماهنگی فرستاده شد"); };
 
+  ctlLabel();
   window.addEventListener("live:watch", (e) => {
     const d = e.detail || {};
-    if (d.t === "load" && d.info) { if (cur && JSON.stringify(cur) === JSON.stringify(d.info) && box.firstChild) return; open(d.info, true); return; }
+    if (d.t === "loaded") { if (pendingLoad && (!d.id || d.id === pendingLoad.id)) { pendingLoad = null; toast(`فیلم برای ${you} هم باز شد ✓`); } return; }
+    if (d.t === "load" && d.info) { if (d.id) emit("watch", { t: "loaded", id: d.id }); if (cur && JSON.stringify(cur) === JSON.stringify(d.info) && box.firstChild) return; open(d.info, true); return; }
     if (d.t === "hello") { if (cur) { emit("watch", { t: "load", info: cur }); if (vid) setTimeout(() => emit("watch", { t: "state", at: vid.currentTime, playing: !vid.paused, force: true }), 1200); } return; }
     if (d.t === "count") { countdown(); return; }
+    if (d.t === "ctl") { ctlPlaying = !!d.playing; ctlLabel(); say("sys", `${you}: ${ctlPlaying ? "پخش کنیم ▶" : "مکث کنیم ⏸"}`); if (ctlPlaying) countdown(); else flash("⏸ مکث"); return; }
     if (d.t === "pausecall") { toast(`⏸ ${you} می‌گوید: مکث کنیم`); say("sys", `${you}: بیایید مکث کنیم`); vibe([60, 80, 60]); return; }
     if (d.t === "goto") { toast(`⏱ ${you}: برو به ${d.time}`); say("sys", `${you}: برو به ${d.time}`); vibe([40, 60, 40]); return; }
     if (!vid) return;
-    if (d.t === "play") apply(() => { seekTo(d.at); vid.play().catch(() => toast("برای پخش هم‌زمان یک بار روی ویدئو بزن ▶")); });
-    else if (d.t === "pause") apply(() => { vid.pause(); seekTo(d.at); });
-    else if (d.t === "seek") apply(() => { seekTo(d.at); if (d.playing && vid.paused) vid.play().catch(() => {}); });
-    else if (d.t === "state") { if (d.force || Math.abs(vid.currentTime - d.at) > 1.5) apply(() => seekTo(d.at)); if (d.playing && vid.paused) apply(() => vid.play().catch(() => {})); }
+    if (d.t === "play") { say("sys", `${you} پخش کرد ▶`); apply(() => remotePlay(d.at)); }
+    else if (d.t === "pause") { lastState = { at: d.at, t: Date.now(), playing: false }; say("sys", `${you} مکث کرد ⏸`); apply(() => { vid.pause(); seekTo(d.at); }); }
+    else if (d.t === "seek") { lastState = { at: d.at, t: Date.now(), playing: !!d.playing }; apply(() => { seekTo(d.at); if (d.playing && vid.paused) remotePlay(d.at); }); }
+    else if (d.t === "state") { lastState = { at: d.at, t: Date.now(), playing: !!d.playing }; if (d.force || Math.abs(vid.currentTime - d.at) > 1.5) apply(() => seekTo(d.at)); if (d.playing && vid.paused) apply(() => remotePlay(d.at)); else if (!d.playing && !vid.paused) apply(() => vid.pause()); }
   });
+
+  /* ---------- دکمهٔ مشترک پخش / مکث ---------- */
+  let ctlPlaying = false; const tg = $("wToggle");
+  const ctlLabel = () => { tg.textContent = ctlPlaying ? "⏸ مکث مشترک" : "▶ پخش مشترک"; tg.classList.toggle("playing", ctlPlaying); };
+  const syncCtl = () => { tg.hidden = $("wStage").hidden && $("wShareBox").hidden; };
+  setInterval(syncCtl, 600);
+  function flash(t) { const ov = $("wCountOv"); ov.hidden = false; ov.textContent = t; vibe([60, 80, 60]); setTimeout(() => (ov.hidden = true), 1100); }
+  tg.onclick = () => {
+    if (vid) { vid.paused ? vid.play().catch(() => {}) : vid.pause(); return; }          // لینک مستقیم: کنترل واقعی و هم‌زمان
+    ctlPlaying = !ctlPlaying; ctlLabel(); emit("watch", { t: "ctl", playing: ctlPlaying });  // آپارات/اشتراک صفحه: هر دو همین لحظه پیام می‌گیرند
+    if (ctlPlaying) countdown(); else flash("⏸");
+  };
+  addEventListener("keydown", (e) => { if (e.code === "Space" && !tg.hidden && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || "")) { e.preventDefault(); tg.click(); } });
 
   /* ---------- ابزار آپارات ---------- */
   function countdown() {
@@ -142,14 +184,55 @@
   $("wMic").onclick = startCall;
   $("wHang").onclick = () => endCall(true);
   $("wMute").onclick = () => { muted = !muted; if (local) local.getAudioTracks().forEach((t) => (t.enabled = !muted)); $("wMute").textContent = muted ? "🔊 باز کردن صدا" : "🔇 بی‌صدا"; $("wMute").classList.toggle("on", muted); };
-  addEventListener("pagehide", () => { if (pc) emit("rtc", { t: "bye" }); });
+  addEventListener("pagehide", () => { if (pc) emit("rtc", { t: "bye" }); if (sharing) emit("rtcv", { t: "bye" }); });
+
+  /* ---------- اشتراک‌گذاری صفحه (WebRTC) ---------- */
+  let spc = null, sStream = null, sPend = [], sharing = false;
+  const sbox = $("wShareBox"), sv = $("wShareV");
+  const sIce = (pc2) => { pc2.onicecandidate = (e) => { if (e.candidate) emit("rtcv", { t: "ice", c: e.candidate.toJSON ? e.candidate.toJSON() : e.candidate }); }; };
+  async function shareOffer() {
+    if (!sStream) return; try { spc && spc.close(); } catch (e) {}
+    spc = new RTCPeerConnection({ iceServers: ICE }); sPend = []; sIce(spc);
+    sStream.getTracks().forEach((t) => spc.addTrack(t, sStream));
+    spc.onconnectionstatechange = () => { if (spc && spc.connectionState === "failed") toast("اتصال اشتراک صفحه برقرار نشد؛ شبکه‌ها ممکن است به TURN نیاز داشته باشند"); };
+    const o = await spc.createOffer(); await spc.setLocalDescription(o); emit("rtcv", { t: "offer", sdp: o.sdp });
+  }
+  async function startShare() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) { toast("اشتراک صفحه فقط روی کامپیوتر (Chrome/Edge) ممکن است؛ اگر طرف مقابل از کامپیوتر اشتراک بگذارد، تو با گوشی هم می‌بینی"); return; }
+    if (!online()) { toast(`${you} الان در این صفحه نیست`); return; }
+    try { sStream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 30 }, audio: true }); } catch (e) { toast("اشتراک لغو شد"); return; }
+    sharing = true; $("wShare").hidden = true; $("wShareStop").hidden = false; say("sys", "اشتراک صفحه شروع شد");
+    sStream.getVideoTracks()[0].onended = () => stopShare(true);
+    try { await shareOffer(); } catch (e) { toast("شروع اشتراک ممکن نشد"); stopShare(true); }
+  }
+  function stopShare(notify) {
+    sharing = false; if (notify) emit("rtcv", { t: "bye" }); if (sStream) { sStream.getTracks().forEach((t) => (t.onended = null, t.stop())); sStream = null; }
+    try { spc && spc.close(); } catch (e) {} spc = null; sv.srcObject = null; sbox.hidden = true; $("wShare").hidden = false; $("wShareStop").hidden = true; sbox.querySelectorAll(".w-tap").forEach((x) => x.remove());
+  }
+  $("wShare").onclick = startShare; $("wShareStop").onclick = () => stopShare(true);
+  window.addEventListener("live:rtcv", async (ev) => {
+    const d = ev.detail || {};
+    try {
+      if (d.t === "offer") {
+        try { spc && spc.close(); } catch (e) {} spc = new RTCPeerConnection({ iceServers: ICE }); sPend = []; sIce(spc);
+        spc.ontrack = (e) => { sv.srcObject = e.streams[0]; sbox.hidden = false; sv.muted = false; sv.play().catch(() => { sv.muted = true; sv.play().catch(() => {}); tapOverlay(sbox, "🔊 بزن تا صدا و تصویر باز شود", () => { sv.muted = false; sv.play().catch(() => {}); }); }); };
+        spc.onconnectionstatechange = () => { if (spc && spc.connectionState === "connected") say("sys", `${you} صفحه‌اش را نشان می‌دهد 📺`); };
+        await spc.setRemoteDescription({ type: "offer", sdp: d.sdp });
+        for (const c of sPend) { try { await spc.addIceCandidate(c); } catch (e) {} } sPend = [];
+        const a = await spc.createAnswer(); await spc.setLocalDescription(a); emit("rtcv", { t: "answer", sdp: a.sdp });
+      } else if (d.t === "answer" && spc) { await spc.setRemoteDescription({ type: "answer", sdp: d.sdp }); for (const c of sPend) { try { await spc.addIceCandidate(c); } catch (e) {} } sPend = []; }
+      else if (d.t === "ice") { if (spc && spc.remoteDescription) { try { await spc.addIceCandidate(d.c); } catch (e) {} } else sPend.push(d.c); }
+      else if (d.t === "bye") { try { spc && spc.close(); } catch (e) {} spc = null; sv.srcObject = null; sbox.hidden = true; say("sys", `${you} اشتراک را تمام کرد`); }
+    } catch (e) { toast("خطا در اشتراک صفحه"); }
+  });
 
   /* ---------- اتصال زنده ---------- */
-  const status = () => { const s = $("wStatus"), o = online(); s.textContent = o ? `${you} هم اینجاست 🤍` : "آفلاین"; s.classList.toggle("on", o); };
+  const status = () => { const s = $("wStatus"), o = online(), c = (() => { try { return LiveBus.connected(); } catch (e) { return false; } })(); s.textContent = !c ? "در حال اتصال به اتصال زنده…" : o ? `${you} هم اینجاست 🤍` : `${you} در این صفحه نیست`; s.classList.toggle("on", o); };
+  window.addEventListener("live:conn", status);
   let helloSent = false;
   window.addEventListener("live:presence", (e) => {
     status(); const on = e.detail && e.detail.on;
-    if (on && !helloSent) { helloSent = true; emit("watch", { t: "hello" }); if (cur) { emit("watch", { t: "load", info: cur }); } }
+    if (on && !helloSent) { helloSent = true; emit("watch", { t: "hello" }); if (cur) { emit("watch", { t: "load", info: cur }); } if (sharing) shareOffer().catch(() => {}); }
     if (!on) { helloSent = false; if (pc && pc.connectionState !== "connected") endCall(false); }
   });
   LiveBus.start(me); status();

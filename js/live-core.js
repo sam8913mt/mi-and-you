@@ -9,7 +9,7 @@
   const msg = (event, payload) => ({ topic, event, payload, ref: String(ref++), join_ref: "1" });
   const fire = (n, d) => window.dispatchEvent(new CustomEvent("live:" + n, { detail: d }));
   const onMsg = (m) => {
-    if (m.event === "phx_reply" && m.topic === topic && m.payload && m.payload.status === "ok" && !joined) { joined = true; retry = 0; send(msg("presence", { type: "presence", event: "track", payload: { who, at: Date.now() } })); }
+    if (m.event === "phx_reply" && m.topic === topic && m.payload && m.payload.status === "ok" && !joined) { joined = true; retry = 0; fire("conn", { on: true }); send(msg("presence", { type: "presence", event: "track", payload: { who, at: Date.now() } })); }
     else if (m.event === "presence_state" && m.payload) { present = new Set(Object.keys(m.payload)); fire("presence", { on: present.has(other(who)) }); }
     else if (m.event === "presence_diff" && m.payload) { Object.keys(m.payload.joins || {}).forEach((k) => present.add(k)); Object.keys(m.payload.leaves || {}).forEach((k) => present.delete(k)); fire("presence", { on: present.has(other(who)) }); }
     else if (m.event === "broadcast" && m.payload) { const d = m.payload.payload || {}; if (d.from === who) return; fire(m.payload.event, d); }
@@ -25,13 +25,14 @@
       clearInterval(hb); hb = setInterval(() => send({ topic: "phoenix", event: "heartbeat", payload: {}, ref: String(ref++) }), 25000);
     };
     ws.onmessage = (e) => { try { onMsg(JSON.parse(e.data)); } catch (x) {} };
-    ws.onclose = () => { clearInterval(hb); present = new Set(); fire("presence", { on: false }); if (!stopped) setTimeout(connect, Math.min(30000, 2000 * ++retry)); };
+    ws.onclose = () => { clearInterval(hb); joined = false; present = new Set(); fire("conn", { on: false }); fire("presence", { on: false }); if (!stopped) setTimeout(connect, Math.min(30000, 2000 * ++retry)); };
     ws.onerror = () => { try { ws.close(); } catch (e) {} };
   }
   window.LiveBus = {
     start(w) { if (!w) return; if (ws && who === w) return; if (ws) { stopped = true; try { ws.close(); } catch (e) {} stopped = false; } who = w; present = new Set(); connect(); },
     emit(event, payload) { send(msg("broadcast", { type: "broadcast", event, payload: Object.assign({ from: who }, payload || {}) })); },
-    partnerOn() { return present.has(other(who)); }
+    partnerOn() { return present.has(other(who)); },
+    connected() { return !!(ws && ws.readyState === 1 && joined); }
   };
   document.addEventListener("visibilitychange", () => { if (!document.hidden && who && (!ws || ws.readyState > 1)) { stopped = false; connect(); } });
 })();
